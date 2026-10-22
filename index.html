@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d4f7a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CIA P2">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="seed.js"></script>
+<title>CIA Part 2 İş Kağıdı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=Source+Sans+3:wght@400;550;700&family=Source+Code+Pro:wght@450;600&display=swap">
+<style>
+/* Layout: an auditor's workpaper — graph-paper ground, indexed sections (WP refs), reviewer's red pencil for traps, green tick for correct. */
+:root{
+  --paper:#eef2f1; --sheet:#ffffff; --sheet2:#f7f9f9; --ink:#17232b; --muted:#56646c; --rule:#d6dee1; --grid:rgba(23,35,43,.05);
+  --accent:#1d4f7a; --accent-ink:#ffffff; --pencil:#b8402a; --pencil-bg:#fbefec; --tick:#2b6b4b; --tick-bg:#e9f4ee; --hl:#fff1a8; --warn:#9a6a00; --warn-bg:#fdf5e1;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1518; --sheet:#172026; --sheet2:#1c262d; --ink:#e3eaed; --muted:#97a6ad; --rule:#2b3942; --grid:rgba(227,234,237,.035);
+  --accent:#8dbbe8; --accent-ink:#0f1518; --pencil:#ff8a6b; --pencil-bg:#2c1c18; --tick:#6bcc98; --tick-bg:#16291f; --hl:rgba(255,215,90,.22); --warn:#e8b54d; --warn-bg:#2a2414; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1518; --sheet:#172026; --sheet2:#1c262d; --ink:#e3eaed; --muted:#97a6ad; --rule:#2b3942; --grid:rgba(227,234,237,.035);
+  --accent:#8dbbe8; --accent-ink:#0f1518; --pencil:#ff8a6b; --pencil-bg:#2c1c18; --tick:#6bcc98; --tick-bg:#16291f; --hl:rgba(255,215,90,.22); --warn:#e8b54d; --warn-bg:#2a2414; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sheet)}
+button{font:inherit;color:inherit}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+header.top .wrap{padding-block:0}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--rule)}
+.top .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:650;font-size:1.2rem;letter-spacing:.005em;display:flex;align-items:baseline;gap:8px;min-width:0}
+.brand .idx{font-family:var(--f-mono);font-size:.72rem;color:var(--pencil);border:1px solid var(--pencil);border-radius:4px;padding:1px 5px;letter-spacing:.06em}
+.count{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:.85rem;color:var(--muted)}
+.count b{font-family:var(--f-mono);color:var(--ink);font-size:1rem}
+.sync{font-size:.75rem;border:1px solid var(--rule);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.sync.on{color:var(--tick);border-color:var(--tick)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 10px;font-weight:550;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible,.btn:focus-visible,.opt:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-top:20px;display:grid;gap:18px}
+h1,h2,h3{font-family:var(--f-display);font-weight:650;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:1.65rem} h2{font-size:1.3rem} h3{font-size:1.05rem}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:18px;min-width:0}
+.wp{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.muted{color:var(--muted)} .small{font-size:.875rem} .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack{display:grid;gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.btn{border:1px solid var(--rule);background:var(--sheet2);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:550;min-height:40px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:none}
+.btn.sm{padding:4px 10px;min-height:32px;font-size:.875rem}
+.btn[disabled]{opacity:.45;cursor:default}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.p-learn{color:var(--accent)} .p-mock{color:var(--pencil)} .p-weak{color:var(--warn)} .p-review{color:var(--tick)} .p-light{color:var(--muted)}
+.bar-o{height:8px;background:var(--sheet2);border:1px solid var(--rule);border-radius:99px;overflow:hidden}
+.bar-i{height:100%;background:var(--accent)}
+.bar-i.good{background:var(--tick)} .bar-i.bad{background:var(--pencil)} .bar-i.mid{background:var(--warn)}
+.task{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-top:1px dashed var(--rule)}
+.task:first-of-type{border-top:0}
+.tick{width:24px;height:24px;border:2px solid var(--rule);border-radius:6px;display:grid;place-items:center;font-weight:700;color:transparent;cursor:pointer;background:none;padding:0}
+.tick.on{border-color:var(--tick);color:var(--tick);background:var(--tick-bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--rule);background:var(--sheet2);border-radius:6px;padding:3px 8px;font-size:.85rem;cursor:pointer}
+.chip .mono{font-size:.78rem;color:var(--muted)}
+.chip.done{border-color:var(--tick)} .chip.done::after{content:" ✓";color:var(--tick);font-weight:700}
+.big{font-family:var(--f-display);font-size:2.1rem;font-weight:650;line-height:1}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.kpi{border-left:3px solid var(--rule);padding-left:12px}
+.kpi .lab{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+/* question */
+.qhead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.stem{white-space:pre-line;font-size:1.06rem;margin:6px 0 14px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start;border:1px solid var(--rule);background:var(--sheet);border-radius:8px;padding:10px 12px;cursor:pointer;width:100%}
+.opt:hover{border-color:var(--accent)}
+.opt .L{font-family:var(--f-mono);font-weight:600;color:var(--muted)}
+.opt.sel{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.opt.ok{border-color:var(--tick);background:var(--tick-bg)} .opt.ok .L{color:var(--tick)}
+.opt.no{border-color:var(--pencil);background:var(--pencil-bg)} .opt.no .L{color:var(--pencil)}
+.opt[disabled]{cursor:default}
+.stem.tr{margin-top:-6px;padding-top:8px;border-top:1px dashed var(--rule);color:var(--muted)}
+.otr{display:block;margin-top:3px;font-size:.93em;color:var(--muted)}
+.opt.ok .otr,.opt.no .otr{color:inherit;opacity:.85}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden;margin-left:auto}
+.seg button{border:0;background:var(--sheet2);color:var(--muted);font:600 .74rem var(--f-mono);padding:4px 9px;min-height:28px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.elab{font:600 .7rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+ul.pts ul.sub,ul.pts ol.sub{margin:5px 0 0;padding-left:20px;display:grid;gap:3px}
+ul.pts ol.sub{list-style:decimal}
+.keyidea{border:1px solid var(--rule);border-left:3px solid var(--tick);background:var(--tick-bg);border-radius:0 8px 8px 0;padding:10px 14px}
+.keyidea p{margin:0}
+.keyidea strong{font-weight:700}
+h3.ph{font-family:var(--f-display);font-size:1.05rem;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--rule)}
+.asks{border:1px dashed var(--rule);border-radius:8px;padding:10px 14px;background:var(--sheet2)}
+.asks h3{margin:0 0 6px;font-size:.95rem}
+.asks ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.opt.peek{outline:2px dashed var(--accent);outline-offset:2px}
+.whybox{margin-top:10px;border-left:3px solid var(--pencil);background:var(--pencil-bg);padding:10px 14px;border-radius:0 8px 8px 0;white-space:pre-line}
+.expl{border-left:3px solid var(--accent);background:var(--sheet2);padding:10px 14px;border-radius:0 8px 8px 0;white-space:pre-line}
+.verdict{font-weight:700} .verdict.ok{color:var(--tick)} .verdict.no{color:var(--pencil)}
+.unsure{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;cursor:pointer;user-select:none}
+.unsure input{width:18px;height:18px;accent-color:var(--warn)}
+.navgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px}
+.navgrid button{border:1px solid var(--rule);background:var(--sheet);border-radius:5px;font-family:var(--f-mono);font-size:.78rem;padding:4px 0;cursor:pointer}
+.navgrid button.ans{background:var(--sheet2);border-color:var(--muted)}
+.navgrid button.flag{box-shadow:inset 0 -3px 0 var(--warn)}
+.navgrid button.cur{outline:2px solid var(--accent)}
+.navgrid button.ok{border-color:var(--tick);color:var(--tick)} .navgrid button.no{border-color:var(--pencil);color:var(--pencil)}
+/* summary */
+ul.pts{margin:0;padding-left:20px;display:grid;gap:6px}
+ul.pts strong{background:linear-gradient(transparent 58%,var(--hl) 58%);font-weight:700}
+.traps{border:1px solid var(--pencil);background:var(--pencil-bg);border-radius:8px;padding:12px 14px}
+.traps h3{color:var(--pencil);font-size:.95rem;font-family:var(--f-body);text-transform:uppercase;letter-spacing:.06em}
+.traps ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.unit{border-top:1px solid var(--rule);padding:12px 0}
+.unit:first-child{border-top:0}
+.unit>button{all:unset;cursor:pointer;display:grid;grid-template-columns:52px 1fr 120px;gap:10px;align-items:center;width:100%}
+.unit .su{font-family:var(--f-mono);font-weight:600;color:var(--accent)}
+.subrow{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:8px 0 8px 0;border-top:1px dashed var(--rule)}
+.subrow .mono{color:var(--muted)}
+.note{border:1px dashed var(--warn);background:var(--warn-bg);border-radius:8px;padding:10px 12px;font-size:.92rem}
+input[type=search],select{font:inherit;color:inherit;background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:40px;max-width:100%}
+input[type=search]{width:100%}
+label.cb{display:inline-flex;gap:6px;align-items:center;font-size:.92rem}
+.timer{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.timer.low{color:var(--pencil)}
+.daylist .d{display:grid;grid-template-columns:72px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--rule);align-items:start}
+.daylist .d.today{background:linear-gradient(90deg,var(--hl),transparent 60%)}
+.daylist .d:first-child{border-top:0}
+.status{font-size:.8rem;font-weight:700}
+.status.done{color:var(--tick)} .status.late{color:var(--pencil)} .status.now{color:var(--accent)}
+.rules{counter-reset:r;list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.rules li{counter-increment:r;display:grid;grid-template-columns:30px 1fr;gap:6px}
+.rules li::before{content:counter(r);font-family:var(--f-mono);color:var(--pencil);font-weight:600}
+@media (max-width:560px){.unit>button{grid-template-columns:40px 1fr 70px}.subrow{grid-template-columns:40px 1fr}.subrow>:last-child{grid-column:2}.daylist .d{grid-template-columns:58px 1fr}.daylist .d>:last-child{grid-column:2}h1{font-size:1.4rem}.big{font-size:1.7rem}}
+@media (prefers-reduced-motion:no-preference){.opt,.btn{transition:border-color .12s,background-color .12s}}
+</style>
+<style>body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+
+
+<header class="top"><div class="wrap">
+  <div class="bar">
+    <div class="brand"><span class="idx">WP-P2</span><span>CIA Part 2 İş Kağıdı</span></div>
+    <div class="count"><span><b id="cdays">–</b> gün qalıb</span><span class="sync" id="sync">bu cihaz</span></div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Bölmələr"></nav>
+</div></header>
+<div class="wrap"><main id="main"><section class="sheet"><p class="muted">Yüklənir…</p></section></main></div>
+
+<script src="data-0.js"></script><script src="data-1.js"></script><script src="data-2.js"></script><script src="data-3.js"></script><script src="data-4.js"></script>
+<script>
+(function(){
+"use strict";
+const C=window.CIA;
+if(!C){document.getElementById('main').innerHTML='<section class="sheet"><p>Məlumat faylı yüklənmədi. Səhifəni yeniləyin.</p></section>';return;}
+const QS=C.qs, QI={}; QS.forEach(q=>QI[q.id]=q);
+const SUB={}; C.units.forEach(u=>u.subs.forEach(s=>SUB[s.code]=s));
+const UNIT={}; C.units.forEach(u=>UNIT[u.su]=u);
+const DW={A:.5,B:.4,C:.1}, DNAME={A:'Engagement Planning',B:'Information Gathering, Analysis & Evaluation',C:'Engagement Supervision & Communication'}, DTR={A:'Görev Planlaması',B:'Bilgi Toplama, Analiz ve Değerlendirme',C:'Görev Gözetimi ve İletişim'};
+const MON=['yanvar','fevral','mart','aprel','may','iyun','iyul','avqust','sentyabr','oktyabr','noyabr','dekabr'];
+const WD=['bazar','bazar ertəsi','çərşənbə axşamı','çərşənbə','cümə axşamı','cümə','şənbə'];
+const pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const DAY0=Date.UTC(2026,0,1);
+const dnum=s=>{const[y,m,d]=s.split('-').map(Number);return Math.round((Date.UTC(y,m-1,d)-DAY0)/864e5)};
+const dstr=n=>{const d=new Date(DAY0+n*864e5);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())};
+const nowStr=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+let TODAY=dnum(nowStr());
+const START=dnum(C.start), EXAM=dnum(C.exam);
+const fmtDate=s=>{const n=dnum(s);const d=new Date(DAY0+n*864e5);return d.getUTCDate()+' '+MON[d.getUTCMonth()]};
+const fmtDateLong=s=>{const n=dnum(s);const d=new Date(DAY0+n*864e5);return d.getUTCDate()+' '+MON[d.getUTCMonth()]+', '+WD[d.getUTCDay()]};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pct=(a,b)=>b?Math.round(100*a/b):0;
+
+/* ---------- storage ---------- */
+const KEYS=['meta','z','d'];for(let i=1;i<=14;i++)KEYS.push('g'+i);
+const docKey=id=>id[0]==='G'?'g'+id.slice(1).split('.')[0]:(id[0]==='Z'?'z':'d');
+const LS='cia-p2-v1:';
+let LANG=(()=>{try{return localStorage.getItem(LS+'lang')||'both'}catch(e){return 'both'}})();
+const Store={db:null,docs:{},dirty:new Set(),timer:null,busy:false,
+  blank(k){return k==='meta'?{v:1,read:{},days:{},mocks:[],diagAns:{}}:{v:1,r:{}}},
+  loadLocal(){KEYS.forEach(k=>{let o=null;try{o=JSON.parse(localStorage.getItem(LS+k)||'null')}catch(e){}this.docs[k]=o||this.blank(k)})},
+  saveLocal(k){try{localStorage.setItem(LS+k,JSON.stringify(this.docs[k]))}catch(e){}},
+  merge(k,remote){const L=this.docs[k];let changedLocal=false;
+    if(k==='meta'){const R=Object.assign(this.blank('meta'),remote);
+      ['read','days','diagAns'].forEach(f=>{R[f]=R[f]||{};for(const x in L[f]||{}){if(!(x in R[f])){R[f][x]=L[f][x];changedLocal=true}}});
+      const ts=new Set((R.mocks||[]).map(m=>m.ts));(L.mocks||[]).forEach(m=>{if(!ts.has(m.ts)){R.mocks.push(m);changedLocal=true}});
+      R.mocks.sort((a,b)=>a.ts-b.ts); if(L.seeded&&!R.seeded){R.seeded=1;changedLocal=true}
+      this.docs[k]=R;}
+    else{const R={v:1,r:Object.assign({},remote.r||{})};
+      for(const id in L.r){const a=L.r[id],b=R.r[id];if(!b||a[0]>b[0]||(a[0]===b[0]&&(a[6]||0)>(b[6]||0))){R.r[id]=a;changedLocal=true}}
+      this.docs[k]=R;}
+    return changedLocal},
+  async connect(){
+    try{ if(!(window.claude&&typeof window.claude.use==='function'))return;
+      const db=await window.claude.use('db'); if(!db)return; this.db=db;
+      for(const k of KEYS){
+        try{const snap=await db.doc('progress/'+k).get();
+          if(snap.exists){if(this.merge(k,snap.data()))this.dirty.add(k)}else{if(this.hasData(k))this.dirty.add(k)}
+          this.saveLocal(k);}catch(e){}
+      }
+      setSync(true); this.flush(); render();
+    }catch(e){}
+  },
+  hasData(k){const d=this.docs[k];return k==='meta'?(Object.keys(d.read).length||Object.keys(d.days).length||d.mocks.length||d.seeded):Object.keys(d.r).length>0},
+  touch(k){this.saveLocal(k);if(!this.db)return;this.dirty.add(k);clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),1500)},
+  async flush(){if(!this.db||this.busy)return;this.busy=true;
+    try{while(this.dirty.size){const k=this.dirty.values().next().value;this.dirty.delete(k);
+      try{await this.db.doc('progress/'+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e){
+        if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800+Math.random()*800));try{await this.db.doc('progress/'+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e2){}}
+        else if(e&&(e.code==='quota_exceeded')){toast('Bulud yaddaşı doludur; tərəqqi bu cihazda saxlanır.')}
+      }}}finally{this.busy=false}}
+};
+function setSync(on){const el=document.getElementById('sync');el.textContent=on?'bulud ilə sinxron':'bu cihaz';el.classList.toggle('on',on);el.title=on?'Tərəqqi bütün cihazlarda saxlanır':'Tərəqqi yalnız bu brauzerdə saxlanır'}
+const meta=()=>Store.docs.meta;
+const rec=id=>Store.docs[docKey(id)].r[id];
+function setRec(id,r){const k=docKey(id);Store.docs[k].r[id]=r;Store.touch(k)}
+/* rec: [attempts, correct, lastOk, dueDay, box, unsure, lastDay, firstOk] */
+function answer(id,choice,unsure){const q=QI[id],ok=choice===q.a;const old=rec(id);const r=old?old.slice():[0,0,0,0,0,0,0,0];
+  const first=r[0]===0;r[0]++;if(ok)r[1]++;r[2]=ok?1:0;r[5]=unsure?1:0;r[6]=TODAY;
+  if(first)r[7]=ok?1:0;
+  if(!ok){r[4]=0;r[3]=TODAY+1}
+  else if(first){r[4]=unsure?1:4;r[3]=unsure?TODAY+3:0}
+  else{r[4]=Math.min(4,(r[4]||0)+1);r[3]=r[4]>=4?0:TODAY+[1,3,7,14][r[4]]}
+  setRec(id,r);return ok}
+function seedDiag(){if(meta().seeded)return;const wrong={D20:2,D28:0,D30:2,D54:3};
+  QS.filter(q=>q.src==='D').forEach(q=>{if(rec(q.id))return;const ch=(q.id in wrong)?wrong[q.id]:q.a;meta().diagAns[q.id]=ch;
+    const ok=ch===q.a;setRec(q.id,[1,ok?1:0,ok?1:0,ok?0:TODAY+1,ok?4:0,0,TODAY,ok?1:0])});
+  meta().seeded=1;Store.touch('meta')}
+
+/* ---------- stats helpers ---------- */
+function statsFor(ids){let n=ids.length,seen=0,first=0,firstOk=0,cur=0,wrongNow=0;
+  for(const id of ids){const r=rec(id);if(r&&r[0]){seen++;first++;if(r[7])firstOk++;if(r[2])cur++;else wrongNow++}}
+  return{n,seen,firstOk,first,acc:first?firstOk/first:null,cur,wrongNow}}
+const idsSub=c=>QS.filter(q=>q.sc===c&&q.k==='c').map(q=>q.id);
+const idsSubRes=c=>QS.filter(q=>q.sc===c&&q.k==='r').map(q=>q.id);
+const idsSU=su=>QS.filter(q=>q.src==='G'&&q.k==='c'&&q.su===su).map(q=>q.id);
+const NCORE=QS.filter(q=>q.k==='c').length,NRES=QS.filter(q=>q.src==='G'&&q.k==='r').length;
+const dueIds=()=>QS.filter(q=>{const r=rec(q.id);return r&&r[4]<4&&r[3]>0&&r[3]<=TODAY}).map(q=>q.id);
+const wrongIds=()=>QS.filter(q=>{const r=rec(q.id);return r&&r[0]&&!r[2]}).map(q=>q.id);
+const unsureIds=()=>QS.filter(q=>{const r=rec(q.id);return r&&r[5]}).map(q=>q.id);
+function domStats(){const o={};['A','B','C'].forEach(d=>{o[d]=statsFor(QS.filter(q=>q.d===d&&q.src!=='D').map(q=>q.id))});return o}
+function readiness(){const ds=domStats();let w=0,s=0;for(const d in ds){if(ds[d].acc!==null){w+=DW[d];s+=DW[d]*ds[d].acc}}return w?s/w:null}
+function weakSubs(k=3){return Object.values(SUB).map(s=>({s,st:statsFor([...idsSub(s.code),...idsSubRes(s.code)])})).filter(x=>x.st.first>=4).sort((a,b)=>a.st.acc-b.st.acc).slice(0,k)}
+const barCls=a=>a===null?'':(a>=.8?'good':a>=.65?'mid':'bad');
+
+/* ---------- state & routing ---------- */
+const TABS=[['topics','Mövzular'],['practice','Təcrübə'],['mock','Sınaq'],['errors','Səhvlər'],['stds','Standartlar'],['gloss','Lüğət'],['stats','Statistika']];
+const S={view:'topics',unit:null,sub:null,sess:null,mock:null,gq:'',errSel:null};
+function go(v,extra){Object.assign(S,{view:v},extra||{});try{localStorage.setItem(LS+'view',v)}catch(e){}render();window.scrollTo({top:0})}
+function renderTabs(){const t=document.getElementById('tabs');const active=(S.view==='session'?'practice':S.view==='sub'||S.view==='unit'?'topics':S.view==='mockrun'||S.view==='mockres'?'mock':S.view);
+  t.innerHTML=TABS.map(([k,l])=>`<button data-act="tab" data-v="${k}" ${k===active?'aria-current="page"':''}>${l}</button>`).join('')}
+let toastT;function toast(m){let el=document.getElementById('toast');if(!el){el=document.createElement('div');el.id='toast';el.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:.9rem;z-index:20;max-width:90vw';document.body.appendChild(el)}el.textContent=m;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)}
+
+function render(){TODAY=dnum(nowStr());renderTabs();document.getElementById('cdays').textContent=Math.max(0,EXAM-TODAY);
+  const m=document.getElementById('main');const f=V[S.view]||V.topics;m.innerHTML=f();if(S.view==='mockrun')tickTimer()}
+
+/* ---------- views ---------- */
+const V={};
+function dayIndex(){return TODAY-START}
+function planDay(i){return C.plan[i]}
+function learnProgress(d){const ids=d.subs.flatMap(idsSub);const st=statsFor(ids);const rd=d.subs.filter(c=>meta().read[c]).length;return{ids,st,rd}}
+function backlog(upto){const out=[];for(let i=0;i<Math.min(upto,19);i++){const d=C.plan[i];d.subs.forEach(c=>{const ids=idsSub(c);const st=statsFor(ids);if(st.seen<st.n)out.push({c,left:st.n-st.seen})})}return out}
+
+V.today=()=>{const i=dayIndex();let h='';
+  const rd=readiness();const tot=statsFor(QS.filter(q=>q.src!=='D').map(q=>q.id));
+  const head=`<section class="sheet"><div class="wp">Bugün · ${fmtDateLong(nowStr())}</div>
+   <div class="row" style="justify-content:space-between;margin-top:6px"><h1>${i<0?'Plan '+fmtDate(C.start)+' tarixində başlayır':i>=C.plan.length?(TODAY===EXAM?'İmtahan günü. Uğurlar!':'Plan tamamlandı'):'Gün '+(i+1)+' / '+C.plan.length}</h1>
+   ${i>=0&&i<C.plan.length?`<span class="pill p-${planDay(i).type}">${typeName(planDay(i).type)}</span>`:''}</div>
+   <div class="kpis" style="margin-top:14px">
+    <div class="kpi"><div class="lab">İmtahan</div><div class="big mono">${Math.max(0,EXAM-TODAY)}</div><div class="small muted">gün · 20 noyabr</div></div>
+    <div class="kpi"><div class="lab">Əsas suallar</div><div class="big mono">${statsFor(QS.filter(q=>q.k==='c').map(q=>q.id)).seen}</div><div class="small muted">${NCORE} sualdan · cəmi ${tot.seen} işlənib</div></div>
+    <div class="kpi"><div class="lab">İlk cəhd dəqiqliyi</div><div class="big mono">${tot.acc===null?'–':Math.round(tot.acc*100)+'%'}</div><div class="small muted">hədəf ≥ 75%</div></div>
+    <div class="kpi"><div class="lab">Bu gün təkrar</div><div class="big mono">${dueIds().length}</div><div class="small muted">sual növbədədir</div></div>
+   </div></section>`;
+  h+=head;
+  const fi=focusDay();
+  if(fi>=0){if(i>=0&&i<C.plan.length&&fi!==i&&meta().days[planDay(i).date])h+=`<section class="sheet row" style="justify-content:space-between"><span>✓ <b>Gün ${i+1}</b> tamamlandı. Qabaqda gedirsən — növbəti günün materialı aşağıdadır.</span><button class="btn ghost sm" data-act="openday" data-k="${i}">Gün ${i+1}-ə bax</button></section>`;
+    h+=dayCard(planDay(fi),fi,fi===i)}
+  const bl=backlog(Math.max(0,Math.min(i,19)));
+  if(bl.length&&i>0){const n=bl.reduce((a,b)=>a+b.left,0);h+=`<section class="sheet"><div class="row" style="justify-content:space-between"><div><div class="wp">Geridə qalan</div><h2>${n} sual əvvəlki günlərdən</h2></div><button class="btn" data-act="start" data-mode="unseen" data-subs="${bl.map(x=>x.c).join(',')}" data-title="Geridə qalan suallar">Davam et</button></div>
+   <div class="chips" style="margin-top:10px">${bl.map(x=>`<button class="chip" data-act="sub" data-c="${x.c}"><span class="mono">${x.c}</span> ${esc(SUB[x.c].tr)} · ${x.left}</button>`).join('')}</div></section>`}
+  if(fi>=0&&fi+1<C.plan.length){const n=planDay(fi+1);h+=`<section class="sheet"><div class="row" style="justify-content:space-between"><div class="wp">Növbəti · Gün ${fi+2} · ${fmtDate(n.date)}</div><button class="btn ghost sm" data-act="openday" data-k="${fi+1}">Aç</button></div><p style="margin:.4em 0 0">${n.type==='learn'?n.subs.map(c=>`<span class="mono">${c}</span> ${esc(SUB[c].tr)}`).join(' · ')+` <span class="muted">(~${n.pg} səh. · ${n.n} sual)</span>`:esc(n.label)}</p></section>`}
+  return h};
+function focusDay(){const i=Math.max(0,dayIndex());if(i>=C.plan.length)return -1;let k=i;while(k<C.plan.length&&meta().days[C.plan[k].date])k++;return k<C.plan.length?k:-1}
+V.day=()=>{const k=Math.max(0,Math.min(C.plan.length-1,S.dayIdx||0));return `<section class="sheet row" style="justify-content:space-between"><button class="btn ghost sm" data-act="openday" data-k="${k-1}" ${k?'':'disabled'}>← Gün ${k}</button><button class="btn ghost sm" data-act="tab" data-v="plan">Plan</button><button class="btn ghost sm" data-act="openday" data-k="${k+1}" ${k<C.plan.length-1?'':'disabled'}>Gün ${k+2} →</button></section>`+dayCard(planDay(k),k,k===dayIndex())};
+function typeName(t){return{learn:'Öyrənmə',mock:'Sınaq',weak:'Zəif mövzular',review:'Yekun təkrar',light:'Yüngül gün'}[t]}
+function dayCard(d,i,isToday){const done=!!meta().days[d.date];let body='';
+  if(d.type==='learn'){const p=learnProgress(d);const nres=d.subs.reduce((a,c)=>a+idsSubRes(c).filter(id=>!rec(id)||!rec(id)[0]).length,0);
+    body=`<div class="task"><span class="tick ${p.rd===d.subs.length?'on':''}" aria-hidden="true">✓</span><div><b>1. Oxu: Gleim + xülasə</b> <span class="muted small">(~1,5–2 saat · Gleim-də ~${d.pg} səhifə)</span><div class="chips" style="margin-top:6px">${d.subs.map(c=>`<button class="chip ${meta().read[c]?'done':''}" data-act="sub" data-c="${c}"><span class="mono">${c}</span> ${esc(SUB[c].tr)}</button>`).join('')}</div><div class="small muted" style="margin-top:4px">Əvvəl Gleim kitabında subunit-i oxu, sonra burada azərbaycanca xülasəni və tələləri təkrarla. Sonda “Oxudum” düyməsini bas.</div></div><span class="mono small">${p.rd}/${d.subs.length}</span></div>
+    <div class="task"><span class="tick ${p.st.seen===p.st.n?'on':''}" aria-hidden="true">✓</span><div><b>2. Mini test: hər subunit üzrə 5 sual</b> <span class="muted small">(~25–30 dəq · TR + EN)</span><div class="bar-o" style="margin:8px 0 6px"><div class="bar-i" style="width:${pct(p.st.seen,p.st.n)}%"></div></div><div class="small muted">${p.st.seen}/${p.st.n} işlənib${p.st.acc!==null?' · ilk cəhd '+Math.round(p.st.acc*100)+'%':''}</div></div><button class="btn pri sm" data-act="start" data-mode="unseen" data-subs="${d.subs.join(',')}" data-title="Gün ${i+1}: ${d.subs.join(', ')}">${p.st.seen?'Davam et':'Başla'}</button></div>
+    <div class="task"><span class="tick ${dueIds().length===0?'on':''}" aria-hidden="true">✓</span><div><b>3. Təkrar növbəsi</b> <span class="muted small">(~15 dəq)</span><div class="small muted">Səhv və “?” işarəli suallar 1, 3, 7, 14 gün sonra yenidən çıxır.</div></div><button class="btn sm" data-act="start" data-mode="due" data-title="Təkrar növbəsi" ${dueIds().length?'':'disabled'}>${dueIds().length} sual</button></div>
+    <div class="task"><span class="tick" aria-hidden="true" style="opacity:.4">+</span><div><b>4. Əlavə (ixtiyari): ehtiyat suallar</b> <span class="muted small">(vaxt qalsa · TR + EN, izah EN)</span><div class="small muted">Eyni subunit-lərdən Gleim-in qalan sualları. Bunlar sınaq imtahanlarında da çıxır.</div></div><button class="btn sm" data-act="start" data-mode="unseen" data-src="R" data-n="15" data-subs="${d.subs.join(',')}" data-title="Ehtiyat: ${d.subs.join(', ')}" ${nres?'':'disabled'}>15 sual</button></div>`}
+  else if(d.type==='mock'){const ms=meta().mocks.filter(m=>dstr(m.day)===d.date);
+    body=`<div class="task"><span class="tick ${ms.length?'on':''}" aria-hidden="true">✓</span><div><b>1. ${esc(d.label)}</b><div class="small muted">100 sual · 120 dəqiqə · Domain A 50 / B 40 / C 10. Görülməmiş və səhv suallara üstünlük verilir.</div></div><button class="btn pri sm" data-act="mockstart">Başla</button></div>
+    <div class="task"><span class="tick ${ms.length&&dueIds().length===0?'on':''}" aria-hidden="true">✓</span><div><b>2. Nəticəni təhlil et</b><div class="small muted">Hər səhv üçün: hansı qaydanı pozdum? Səhvləri təkrar növbəsində yenidən işlə.</div></div><button class="btn sm" data-act="start" data-mode="due" data-title="Təkrar növbəsi" ${dueIds().length?'':'disabled'}>${dueIds().length} təkrar</button></div>`}
+  else if(d.type==='weak'){const w=weakSubs(3);
+    body=`<div class="task"><span class="tick" aria-hidden="true">✓</span><div><b>1. ${esc(d.label)}</b><div class="chips" style="margin-top:6px">${w.length?w.map(x=>`<button class="chip" data-act="sub" data-c="${x.s.code}"><span class="mono">${x.s.code}</span> ${esc(x.s.tr)} · ${Math.round(x.st.acc*100)}%</button>`).join(''):'<span class="muted small">Hələ kifayət qədər məlumat yoxdur.</span>'}</div><div class="small muted" style="margin-top:4px">Xülasəni yenidən oxu, sonra həmin subunit-lərdən 40 sual işlə (əsas + ehtiyat).</div></div>${w.length?`<button class="btn pri sm" data-act="start" data-mode="all" data-n="40" data-src="CR" data-subs="${w.map(x=>x.s.code).join(',')}" data-title="Zəif mövzular">40 sual</button>`:''}</div>
+    <div class="task"><span class="tick ${dueIds().length===0?'on':''}" aria-hidden="true">✓</span><div><b>2. Təkrar növbəsi və səhv jurnalı</b></div><button class="btn sm" data-act="start" data-mode="due" data-title="Təkrar növbəsi" ${dueIds().length?'':'disabled'}>${dueIds().length} sual</button></div>
+    ${/Domain B/.test(d.label)?`<div class="task"><span class="tick" aria-hidden="true">✓</span><div><b>3. Domain B qarışıq</b><div class="small muted">SU10–12 imtahanın 40%-idir; sual bankında isə az yer tutur. Ona görə əlavə vaxt ayırırıq.</div></div><button class="btn sm" data-act="start" data-mode="all" data-n="60" data-src="CR" data-sus="10,11,12" data-title="Domain B qarışıq">60 sual</button></div>`:''}`}
+  else {body=`<div class="task"><span class="tick" aria-hidden="true">✓</span><div><b>${esc(d.label)}</b><div class="small muted">${d.type==='light'?'Yeni mövzu öyrənmə. Standartlar və Lüğət bölmələrinə göz gəzdir, 20–30 təkrar sualı işlə.':'Səhvlər, Standartlar və Lüğət bölmələrindən istifadə et.'}</div></div><div class="row"><button class="btn sm" data-act="tab" data-v="errors">Səhvlər</button><button class="btn sm" data-act="tab" data-v="stds">Standartlar</button></div></div>`}
+  return `<section class="sheet"><div class="row" style="justify-content:space-between"><div><div class="wp">${isToday?'Bugünkü tapşırıqlar · Gün '+(i+1):'Gün '+(i+1)+(i>dayIndex()?' · qabaqcadan':'')} · ${fmtDate(d.date)}</div><h2>${d.type==='learn'?d.subs.map(c=>'SU '+c).join(' · '):esc(d.label)}</h2></div><button class="btn ${done?'':'ghost'} sm" data-act="daydone" data-date="${d.date}" data-k="${i}">${done?'✓ Gün tamamlandı':(i<C.plan.length-1?'Günü tamamla → növbəti':'Günü tamamla')}</button></div>${body}</section>`}
+
+V.plan=()=>{const i=dayIndex();return `<section class="sheet"><div class="wp">30 günlük plan · 21 oktyabr – 19 noyabr</div><h1 style="margin:.2em 0 .4em">Hər gün təxminən 3 saat</h1>
+  <p class="muted small" style="margin:0 0 6px">İstənilən günə toxunub onun tapşırıqlarını aç — qabaqda getmək olar. 1–19-cu günlər: 14 Study Unit, gündə ~10 səhifə Gleim oxusu və hər subunit üzrə 5 əsas sual (TR + EN, izahlar azərbaycanca). Qalan Gleim sualları ehtiyatdadır: ixtiyari təcrübə və sınaqlar üçün. 20–26: üç sınaq imtahanı və zəif mövzular. 27–30: final sınaq, səhv jurnalı, Standartlar, yüngül gün.</p>
+  <div class="daylist">${C.plan.map((d,k)=>{let st='',cls='';const done=meta().days[d.date];
+    if(d.type==='learn'){const p=learnProgress(d);st=pct(p.st.seen,p.st.n)+'%';}
+    if(done){st='✓ '+(st||'tamam');cls='done'}else if(k===i){st=st||'bu gün';cls='now'}else if(k<i){st=(st||'')+(st?' · ':'')+'gecikib';cls='late'}
+    return `<div class="d ${k===i?'today':''}"><div><button class="chip" data-act="openday" data-k="${k}" title="Bu günün tapşırıqlarını aç"><span class="mono small">${fmtDate(d.date)}</span><br><span class="small">Gün ${k+1} →</span></button></div><div><span class="pill p-${d.type}">${typeName(d.type)}</span><div style="margin-top:4px">${d.type==='learn'?d.subs.map(c=>`<button class="chip" data-act="sub" data-c="${c}" style="margin:2px 2px 0 0"><span class="mono">${c}</span> ${esc(SUB[c].tr)}</button>`).join('')+` <span class="small muted">~${d.pg} səh. · ${d.n} sual</span>`:esc(d.label)}</div></div><div class="status ${cls}">${st}</div></div>`}).join('')}</div></section>
+  <section class="sheet"><div class="wp">İmtahan formatı</div><h2>CIA Part 2 — Practice of Internal Auditing</h2>
+  <div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Domain</th><th class="num">Çəki</th><th>Gleim SU</th></tr></thead><tbody>
+  ${['A','B','C'].map(d=>`<tr><td><b>${d}.</b> ${DNAME[d]}<div class="small muted">${DTR[d]}</div></td><td class="num">${DW[d]*100}%</td><td class="mono">${d==='A'?'1–9':d==='B'?'10–12':'13–14'}</td></tr>`).join('')}</tbody></table></div>
+  <ul class="pts" style="margin-top:10px"><li>100 sual, 120 dəqiqə: sual başına təxminən <strong>72 saniyə</strong>.</li><li>Keçid balı 250–750 şkalasında <strong>600</strong>-dür.</li><li>Heç bir sualı boş buraxma. Şübhəli sualı işarələ (mark for review), sonra geri qayıt.</li><li>Domain B imtahanın 40%-ini təşkil edir, amma sual bankında az yer tutur. Ona görə plan 25-ci gündə ona ayrıca vaxt ayırır.</li></ul></section>`};
+
+V.topics=()=>`<section class="sheet"><div class="wp">Gleim 2025 · 14 Study Unit</div><h1 style="margin:.2em 0 .6em">Mövzular</h1>
+  ${C.units.map(u=>{const st=statsFor(idsSU(u.su));return `<div class="unit"><button data-act="unit" data-su="${u.su}"><span class="su">SU ${u.su}</span><span><b>${esc(u.tr)}</b><br><span class="small muted">${esc(u.en)} · Domain ${u.d}</span></span><span><span class="small mono">${st.seen}/${st.n}${st.acc!==null?' · '+Math.round(st.acc*100)+'%':''}</span><div class="bar-o" style="margin-top:4px"><div class="bar-i ${barCls(st.acc)}" style="width:${pct(st.seen,st.n)}%"></div></div></span></button></div>`}).join('')}</section>`;
+V.unit=()=>{const u=UNIT[S.unit];return `<section class="sheet"><button class="btn ghost sm" data-act="tab" data-v="topics">← Mövzular</button><div class="wp" style="margin-top:10px">SU ${u.su} · Domain ${u.d}</div><h1>${esc(u.tr)}</h1><p class="muted" style="margin:.2em 0 .8em">${esc(u.en)}</p>
+  ${u.subs.map(s=>{const st=statsFor(idsSub(s.code));return `<div class="subrow"><span class="mono">${s.code}</span><button class="chip" data-act="sub" data-c="${s.code}" style="justify-self:start;text-align:left;${meta().read[s.code]?'border-color:var(--tick)':''}">${esc(s.tr)}${meta().read[s.code]?' ✓':''}<br><span class="small muted">${esc(s.en)}</span></button><span class="small mono">${st.seen}/${st.n}${st.acc!==null?' · '+Math.round(st.acc*100)+'%':''}</span></div>`}).join('')}
+  <div class="row" style="margin-top:12px"><button class="btn pri" data-act="start" data-mode="unseen" data-sus="${u.su}" data-title="SU ${u.su}: əsas suallar">Əsas suallar</button><button class="btn" data-act="start" data-mode="wrong" data-sus="${u.su}" data-title="SU ${u.su}: səhvlər">Səhvlər</button><button class="btn" data-act="start" data-mode="unseen" data-src="R" data-n="20" data-sus="${u.su}" data-title="SU ${u.su}: ehtiyat 20">Ehtiyat 20</button></div></section>`};
+function ptsHtml(p){let h='',open=false;for(const x of p){if(x[0]==='§'){if(open){h+='</ul>';open=false}h+=`<h3 class="ph">${x.slice(1)}</h3>`}else{if(!open){h+='<ul class="pts">';open=true}h+=`<li>${x}</li>`}}if(open)h+='</ul>';return h}
+V.sub=()=>{const s=SUB[S.sub];const st=statsFor(idsSub(s.code));const u=UNIT[s.su];
+  return `<section class="sheet stack"><div class="row"><button class="btn ghost sm" data-act="unit" data-su="${s.su}">← SU ${s.su}</button></div>
+  <div><div class="wp">WP ${s.code} · ${esc(u.en)} · Gleim ~${s.pg} səh.</div><h1>${esc(s.tr)}</h1><p class="muted" style="margin:.2em 0 0">${esc(s.en)}</p></div>
+  ${(s.k||[]).length?`<div class="keyidea">${s.k.map(x=>`<p>${x}</p>`).join('')}</div>`:''}
+  ${ptsHtml(s.p)}
+  ${s.t.length?`<div class="traps"><h3>⚠ İmtahan tələləri</h3><ul>${s.t.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+  ${(s.q||[]).length?`<div class="asks"><h3>İmtahan belə soruşur</h3><ul>${s.q.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+  ${s.g.length?`<div><h3 style="margin-bottom:6px">Terminlər · EN ↔ TR</h3><div class="tbl-wrap"><table><thead><tr><th>English</th><th>Türkçe</th></tr></thead><tbody>${s.g.map(g=>`<tr><td>${esc(g[0])}</td><td>${esc(g[1])}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+  <div class="row" style="justify-content:space-between;border-top:1px solid var(--rule);padding-top:12px"><span class="small muted mono">${st.seen}/${st.n} işlənib${st.acc!==null?' · ilk cəhd '+Math.round(st.acc*100)+'%':''}${st.wrongNow?' · '+st.wrongNow+' səhv':''}</span>
+  <div class="row"><button class="btn ${meta().read[s.code]?'':'pri'}" data-act="read" data-c="${s.code}">${meta().read[s.code]?'✓ Oxunub':'Oxudum'}</button><button class="btn pri" data-act="start" data-mode="unseen" data-subs="${s.code}" data-title="${s.code} ${esc(s.tr)}">5 sual</button>${st.wrongNow?`<button class="btn" data-act="start" data-mode="wrong" data-subs="${s.code}" data-title="${s.code}: səhvlər">Səhvlər (${st.wrongNow})</button>`:''}${s.nr?`<button class="btn" data-act="start" data-mode="unseen" data-src="R" data-n="15" data-subs="${s.code}" data-title="${s.code}: ehtiyat">Ehtiyat (${s.nr})</button>`:''}</div></div></section>`};
+
+V.practice=()=>{const live=S.sess&&S.sess.i<S.sess.ids.length;
+  return `${live?`<section class="sheet row" style="justify-content:space-between"><span>Açıq sessiya: <b>${esc(S.sess.title)}</b> · ${S.sess.i+1}/${S.sess.ids.length}</span><button class="btn pri" data-act="tab" data-v="session">Sessiyaya qayıt</button></section>`:''}<section class="sheet stack"><div><div class="wp">Sessiya qur</div><h1>Təcrübə</h1></div>
+  <div class="grid2">
+   <div class="stack"><label class="small muted" for="pm">Rejim</label><select id="pm"><option value="unseen">Görülməmiş suallar</option><option value="all">Hamısı (təsadüfi)</option><option value="wrong">Hazırda səhv olanlar</option><option value="unsure">“?” işarəli olanlar</option><option value="due">Təkrar növbəsi</option></select>
+   <label class="small muted" for="pn">Sual sayı</label><select id="pn"><option>10</option><option selected>20</option><option>40</option><option>60</option><option value="0">Hamısı</option></select>
+   <label class="small muted" for="psrc">Mənbə</label><select id="psrc"><option value="C">Əsas suallar · TR + EN (${NCORE})</option><option value="R">Ehtiyat Gleim · TR + EN (${NRES})</option><option value="CR">Əsas + ehtiyat</option><option value="Z">Zain nümunələri · EN (42)</option><option value="D">70 diaqnostik · TR + EN</option></select></div>
+   <div class="stack"><span class="small muted">Study Unit-lər</span><div class="chips" id="psus">${C.units.map(u=>`<label class="chip"><input type="checkbox" value="${u.su}" checked> <span class="mono">SU${u.su}</span></label>`).join('')}</div>
+   <div class="row"><button class="btn sm ghost" data-act="psall" data-v="1">Hamısını seç</button><button class="btn sm ghost" data-act="psall" data-v="0">Heç biri</button><button class="btn sm ghost" data-act="psdom" data-v="B">Yalnız Domain B</button></div></div>
+  </div>
+  <div class="row"><button class="btn pri" data-act="pstart">Sessiyanı başlat</button><span class="small muted">Klaviatura: 1–4 və ya A–D seçir, Enter növbəti sual, U “?” işarəsi.</span></div></section>
+  <section class="sheet"><div class="wp">Sürətli</div><div class="row" style="margin-top:8px">
+   <button class="btn" data-act="start" data-mode="due" data-title="Təkrar növbəsi" ${dueIds().length?'':'disabled'}>Təkrar növbəsi (${dueIds().length})</button>
+   <button class="btn" data-act="start" data-mode="wrong" data-title="Bütün səhvlər" ${wrongIds().length?'':'disabled'}>Bütün səhvlər (${wrongIds().length})</button>
+   <button class="btn" data-act="start" data-mode="all" data-n="30" data-title="Qarışıq 30 (imtahan çəkisi ilə)" data-weighted="1">Qarışıq 30 (50/40/10)</button></div></section>`};
+function buildPool({mode,subs,sus,src,n,weighted}){const rev=mode==='due'||mode==='wrong'||mode==='unsure';let pool=QS.filter(q=>{
+   if(src==='C'&&q.k!=='c')return false;if(src==='R'&&!(q.src==='G'&&q.k==='r'))return false;if(src==='CR'&&q.src!=='G')return false;if(src==='Z'&&q.src!=='Z')return false;if(src==='D'&&q.src!=='D')return false;
+   if(!src&&!rev&&q.k!=='c')return false;
+   if(subs&&!subs.includes(q.sc))return false;if(sus){if(q.src==='Z'){if(src!=='Z')return false}else if(!sus.includes(q.su))return false}return true});
+  const r=id=>rec(id);
+  if(mode==='unseen')pool=pool.filter(q=>!r(q.id)||!r(q.id)[0]);
+  if(mode==='wrong')pool=pool.filter(q=>r(q.id)&&r(q.id)[0]&&!r(q.id)[2]);
+  if(mode==='unsure')pool=pool.filter(q=>r(q.id)&&r(q.id)[5]);
+  if(mode==='due')pool=pool.filter(q=>{const x=r(q.id);return x&&x[4]<4&&x[3]>0&&x[3]<=TODAY});
+  let ids=pool.map(q=>q.id);
+  if(mode==='unseen'&&subs&&!n){/* keep book order within day */}
+  else shuffle(ids);
+  if(weighted&&n){const by={A:[],B:[],C:[]};ids.forEach(id=>by[QI[id].d].push(id));const want={A:Math.round(n*.5),B:Math.round(n*.4)};want.C=n-want.A-want.B;ids=shuffle([...by.A.slice(0,want.A),...by.B.slice(0,want.B),...by.C.slice(0,want.C)])}
+  if(n)ids=ids.slice(0,n);return ids}
+function startSession(opts,title){const ids=buildPool(opts);if(!ids.length){toast('Bu seçimdə sual qalmayıb.');return}
+  S.sess={ids,i:0,title,res:{},unsure:false,picked:null};go('session')}
+V.session=()=>{const s=S.sess;if(!s)return V.practice();
+  if(s.i>=s.ids.length){const ok=Object.values(s.res).filter(Boolean).length,n=Object.keys(s.res).length;
+    const wrong=Object.entries(s.res).filter(([,v])=>!v).map(([k])=>k);
+    return `<section class="sheet stack"><div class="wp">Sessiya bitdi · ${esc(s.title)}</div><h1>${ok} / ${n} düz · ${pct(ok,n)}%</h1>
+    ${wrong.length?`<div><h3>Səhv etdiyin suallar</h3><ul class="pts" style="margin-top:6px">${wrong.map(id=>`<li><span class="mono small">${id}</span> ${esc(QI[id].s.split('\n')[0].slice(0,140))}…</li>`).join('')}</ul><p class="small muted">Bunlar sabah təkrar növbəsinə düşəcək.</p></div>`:'<p>Hamısı düzdür. Əla!</p>'}
+    <div class="row"><button class="btn pri" data-act="tab" data-v="topics">Mövzulara qayıt</button>${wrong.length?`<button class="btn" data-act="redo">Səhvləri indi təkrarla</button>`:''}</div></section>`}
+  const q=QI[s.ids[s.i]],done=s.picked!==null;const ok=done&&s.picked===q.a;const r=rec(q.id);
+  const answered=Object.keys(s.res).length,okc=Object.values(s.res).filter(Boolean).length;
+  return `<section class="sheet"><div class="qhead"><div><div class="wp">${esc(s.title)}</div><div class="small mono">${s.i+1} / ${s.ids.length} · düz ${okc}/${answered}</div></div><button class="btn ghost sm" data-act="endsess">Bitir</button></div>
+   <div class="bar-o" style="margin:8px 0 12px"><div class="bar-i" style="width:${pct(s.i,s.ids.length)}%"></div></div>
+   ${qBlock(q,{picked:s.picked,reveal:done})}
+   <div class="row" style="margin-top:14px;justify-content:space-between">${done?`<span class="verdict ${ok?'ok':'no'}">${ok?'✓ Düzdür':'✗ Səhvdir — düzgün cavab '+'ABCD'[q.a]}</span><button class="btn pri" data-act="next" id="nextbtn">Növbəti →</button>`:`<label class="unsure"><input type="checkbox" id="uns" ${s.unsure?'checked':''}> Əmin deyiləm (?)</label><span class="small muted">${r&&r[0]?'Əvvəl '+r[0]+' dəfə işlənib':'İlk dəfə'}</span>`}</div></section>`};
+function qBlock(q,{picked,reveal,yours}){const tag=q.src==='G'?`Gleim ${q.sc} · ${q.k==='c'?'əsas':'ehtiyat'}`:q.src==='Z'?`Zain · Domain ${q.d}`:`Diaqnostika · SU ${q.su}`;
+  const hasTr=!!q.st,L=hasTr?LANG:'en';
+  const seg=hasTr?`<div class="seg" role="group" aria-label="Sualın dili">${[['both','EN+TR'],['tr','TR'],['en','EN']].map(([v,l])=>`<button data-act="lang" data-v="${v}" class="${L===v?'on':''}" aria-pressed="${L===v}">${l}</button>`).join('')}</div>`:`<span class="small muted" style="margin-left:auto">yalnız EN</span>`;
+  const stem=L==='tr'?`<div class="stem" lang="tr">${esc(q.st)}</div>`:L==='en'?`<div class="stem" lang="en">${esc(q.s)}</div>`:`<div class="stem" lang="en">${esc(q.s)}</div><div class="stem tr" lang="tr">${esc(q.st)}</div>`;
+  const ot=k=>L==='tr'?`<span lang="tr">${esc(q.ot[k])}</span>`:L==='en'?`<span lang="en">${esc(q.o[k])}</span>`:`<span><span lang="en">${esc(q.o[k])}</span>${q.ot[k]!==q.o[k]?`<span class="otr" lang="tr">${esc(q.ot[k])}</span>`:''}</span>`;
+  return `<div class="row" style="gap:8px"><span class="mono small muted">${q.id}</span><span class="pill p-learn" style="font-size:.66rem">${tag}</span>${q.sc!=='Z'&&q.sc!=='D'?`<button class="btn ghost sm" data-act="sub" data-c="${q.sc}" style="min-height:26px;padding:0 8px">Xülasə ${q.sc}</button>`:''}${seg}</div>
+   ${stem}
+   ${(()=>{const pk=reveal&&S.peek&&S.peek.id===q.id?S.peek.k:null;const focus=pk!==null?pk:(picked!==null&&picked!==undefined?picked:null);
+   const opts=`<div class="opts">${q.o.map((t,k)=>{let c='';if(reveal){if(k===q.a)c='ok';else if(k===picked)c='no';if(k===pk)c+=' peek'}else if(k===picked)c='sel';
+     return `<button class="opt ${c}" data-act="${reveal?'peek':'pick'}" data-id="${q.id}" data-k="${k}" ${reveal?`aria-label="Variant ${'ABCD'[k]}: izahı göstər"`:''}><span class="L">${'ABCD'[k]}</span>${ot(k)}</button>`}).join('')}</div>`;
+   if(!reveal)return opts;
+   const why=k=>q.w&&q.w[k]?`<span lang="az">${esc(q.w[k])}</span>`:`<span class="muted">Bu variant üçün ayrıca izah yoxdur — düzgün cavabın izahına bax.</span>`;
+   const wrongBox=(focus!==null&&focus!==q.a)?`<div class="whybox"><div class="elab">Niyə ${'ABCD'[focus]} səhvdir</div>${why(focus)}</div>`:'';
+   return opts+`<p class="small muted" style="margin:8px 0 0">Digər variantlara toxun — hər birinin niyə düz və ya səhv olduğunu gör. Statistikaya yalnız ilk cavabın yazılır.</p>`+wrongBox+`<div class="expl" style="margin-top:10px"><div class="elab">${focus===q.a?'Düzgün cavab '+'ABCD'[q.a]+' — izah':'Düzgün cavab: '+'ABCD'[q.a]} · ${q.el==='az'?'AZ':'EN'}</div>${yours!==undefined?`<div class="small" style="margin-bottom:6px">Sənin cavabın: <b>${yours===null?'—':'ABCD'[yours]}</b> · Düzgün: <b>${'ABCD'[q.a]}</b></div>`:''}<span lang="${q.el==='az'?'az':'en'}">${esc(q.e)}</span>${q.note?`\n\n<span class="small muted">${esc(q.note)}</span>`:''}</div>`})()}`}
+
+/* ---------- mock ---------- */
+V.mock=()=>{const ms=meta().mocks.slice().reverse();
+  return `<section class="sheet stack"><div><div class="wp">Sınaq imtahanı</div><h1>100 sual · 120 dəqiqə</h1></div>
+  <ul class="pts"><li>Domain çəkiləri imtahandakı kimidir: <strong>A 50 · B 40 · C 10</strong>.</li><li>Suallar bütün bankdan seçilir: əsas suallar (TR + EN), ehtiyat Gleim sualları (TR + EN) və Zain nümunələri. Əvvəlcə görülməmiş, sonra səhv etdiyin suallar gəlir.</li><li>Cavablar sonda göstərilir. Hər nəticə təkrar növbəsinə yazılır.</li><li>Tempin sual başına təxminən 72 saniyə olmalıdır. 60-cı dəqiqədə ən azı 50-ci sualda ol.</li></ul>
+  <div class="row"><button class="btn pri" data-act="mockstart">Sınağı başlat</button>${S.mock&&!S.mock.submitted?`<button class="btn" data-act="mockresume">Davam et (${Object.keys(S.mock.ans).length}/100)</button>`:''}</div></section>
+  <section class="sheet"><div class="wp">Nəticələr</div>${ms.length?`<div class="tbl-wrap"><table><thead><tr><th>Tarix</th><th class="num">Ümumi</th><th class="num">A</th><th class="num">B</th><th class="num">C</th><th class="num">Çəkili</th><th class="num">Vaxt</th></tr></thead><tbody>${ms.map(m=>`<tr><td>${fmtDate(dstr(m.day))}</td><td class="num">${m.ok}/${m.n}</td>${['A','B','C'].map(d=>`<td class="num">${m.by[d]?pct(m.by[d][0],m.by[d][1])+'%':'–'}</td>`).join('')}<td class="num"><b>${Math.round(m.w*100)}%</b></td><td class="num">${Math.round(m.sec/60)} dəq</td></tr>`).join('')}</tbody></table></div><p class="small muted">Hədəf: çəkili nəticə ardıcıl olaraq 75% və yuxarı. Gleim sualları real imtahandan bir qədər çətindir; 70–75% yaxşı göstəricidir.</p>`:'<p class="muted">Hələ sınaq imtahanı yoxdur. Planda ilk sınaq 9 noyabrdadır, istəsən daha tez də edə bilərsən.</p>'}</section>`};
+function mockStart(){const pick=(d,n)=>{const all=QS.filter(q=>q.d===d&&q.src!=='D');const uns=shuffle(all.filter(q=>!rec(q.id)||!rec(q.id)[0]).map(q=>q.id));const wr=shuffle(all.filter(q=>rec(q.id)&&rec(q.id)[0]&&!rec(q.id)[2]).map(q=>q.id));const rest=shuffle(all.filter(q=>rec(q.id)&&rec(q.id)[2]).map(q=>q.id));return [...uns,...wr,...rest].slice(0,n)};
+  const ids=shuffle([...pick('A',50),...pick('B',40),...pick('C',10)]);
+  S.mock={ids,i:0,ans:{},flag:{},start:Date.now(),limit:120*60*1000,submitted:false};go('mockrun')}
+V.mockrun=()=>{const m=S.mock;if(!m)return V.mock();const q=QI[m.ids[m.i]];
+  return `<section class="sheet"><div class="qhead"><div><div class="wp">Sınaq · sual ${m.i+1}/100</div><div class="small mono">${Object.keys(m.ans).length} cavablanıb · ${Object.keys(m.flag).filter(k=>m.flag[k]).length} işarəli</div></div><div class="row"><span class="timer" id="timer">--:--</span><button class="btn sm" data-act="mocksubmit">Təhvil ver</button></div></div>
+   <div style="margin-top:12px">${qBlock(q,{picked:m.ans[q.id]??null,reveal:false})}</div>
+   <div class="row" style="margin-top:14px;justify-content:space-between"><label class="unsure"><input type="checkbox" id="mflag" ${m.flag[q.id]?'checked':''}> Sonra yoxla</label><div class="row"><button class="btn" data-act="mprev" ${m.i?'':'disabled'}>← Əvvəlki</button><button class="btn pri" data-act="mnext">${m.i<99?'Növbəti →':'Sonuncu'}</button></div></div></section>
+   <section class="sheet"><div class="wp" style="margin-bottom:8px">Naviqasiya</div><div class="navgrid">${m.ids.map((id,k)=>`<button data-act="mgo" data-k="${k}" class="${id in m.ans?'ans':''} ${m.flag[id]?'flag':''} ${k===m.i?'cur':''}">${k+1}</button>`).join('')}</div></section>`};
+let tmr;function tickTimer(){clearInterval(tmr);const f=()=>{const m=S.mock,el=document.getElementById('timer');if(!m||!el||m.submitted){clearInterval(tmr);return}const left=Math.max(0,m.limit-(Date.now()-m.start));el.textContent=pad(Math.floor(left/60000))+':'+pad(Math.floor(left/1000)%60);el.classList.toggle('low',left<10*60000);if(left<=0){clearInterval(tmr);mockSubmit(true)}};f();tmr=setInterval(f,1000)}
+function mockSubmit(auto){const m=S.mock;if(!m||m.submitted)return;m.submitted=true;m.sec=Math.round((Date.now()-m.start)/1000);
+  const by={A:[0,0],B:[0,0],C:[0,0]};let ok=0;
+  m.ids.forEach(id=>{const q=QI[id];by[q.d][1]++;const a=m.ans[id];if(a===q.a){ok++;by[q.d][0]++}
+    if(a!==undefined)answer(id,a,!!m.flag[id]);else{const r=rec(id)||[0,0,0,0,0,0,0,0];const first=!r[0];const x=r.slice();x[0]++;x[2]=0;x[4]=0;x[3]=TODAY+1;x[6]=TODAY;if(first)x[7]=0;setRec(id,x)}});
+  let w=0;for(const d in by)if(by[d][1])w+=DW[d]*by[d][0]/by[d][1];
+  meta().mocks.push({ts:Date.now(),day:TODAY,n:m.ids.length,ok,by,w,sec:m.sec});Store.touch('meta');
+  if(auto)toast('Vaxt bitdi. Sınaq avtomatik təhvil verildi.');m.i=0;go('mockres')}
+V.mockres=()=>{const m=S.mock;if(!m)return V.mock();const last=meta().mocks[meta().mocks.length-1];const q=QI[m.ids[m.i]];
+  return `<section class="sheet stack"><div class="wp">Sınaq nəticəsi</div><h1>${last.ok}/100 · çəkili ${Math.round(last.w*100)}%</h1>
+   <div class="kpis">${['A','B','C'].map(d=>`<div class="kpi"><div class="lab">Domain ${d} · ${DW[d]*100}%</div><div class="big mono">${pct(last.by[d][0],last.by[d][1])}%</div><div class="small muted">${last.by[d][0]}/${last.by[d][1]}</div></div>`).join('')}<div class="kpi"><div class="lab">Vaxt</div><div class="big mono">${Math.round(last.sec/60)}</div><div class="small muted">dəqiqə</div></div></div>
+   <p class="small muted" style="margin:0">Aşağıda hər sualı izahı ilə nəzərdən keçir. Səhvlər təkrar növbəsinə əlavə olundu.</p></section>
+   <section class="sheet">${qBlock(q,{picked:m.ans[q.id]??null,reveal:true,yours:m.ans[q.id]??null})}
+   <div class="row" style="margin-top:12px;justify-content:space-between"><button class="btn" data-act="mprev" ${m.i?'':'disabled'}>← Əvvəlki</button><button class="btn" data-act="mnextwrong">Növbəti səhv</button><button class="btn pri" data-act="mnext">Növbəti →</button></div></section>
+   <section class="sheet"><div class="navgrid">${m.ids.map((id,k)=>`<button data-act="mgo" data-k="${k}" class="${m.ans[id]===QI[id].a?'ok':'no'} ${k===m.i?'cur':''}">${k+1}</button>`).join('')}</div></section>`};
+
+/* ---------- errors ---------- */
+V.errors=()=>{const w=wrongIds(),u=unsureIds().filter(id=>!w.includes(id));const group={};w.forEach(id=>{const k=QI[id].sc==='Z'?'Zain':QI[id].sc==='D'?'Diaqnostika':'SU '+QI[id].su;(group[k]=group[k]||[]).push(id)});
+  const sel=S.errSel&&QI[S.errSel]?QI[S.errSel]:null;const r=sel?rec(sel.id):null;
+  return `<section class="sheet stack"><div class="row" style="justify-content:space-between"><div><div class="wp">Səhv jurnalı</div><h1>${w.length} səhv · ${u.length} “?”</h1></div><div class="row"><button class="btn pri" data-act="start" data-mode="wrong" data-title="Bütün səhvlər" ${w.length?'':'disabled'}>Hamısını təkrarla</button><button class="btn" data-act="start" data-mode="unsure" data-title="“?” işarəli" ${unsureIds().length?'':'disabled'}>“?” olanlar</button></div></div>
+  <p class="small muted" style="margin:0">Sual düz cavablananda buradan çıxır, amma 1–3–7–14 günlük təkrar dövrünü tamamlayana qədər növbədə qalır.</p></section>
+  ${sel?`<section class="sheet">${qBlock(sel,{picked:null,reveal:true})}<p class="small muted">Cəhdlər: ${r?r[0]:0} · düz: ${r?r[1]:0}</p><button class="btn sm" data-act="errsel" data-id="">Bağla</button></section>`:''}
+  ${Object.keys(group).length?Object.entries(group).sort((a,b)=>b[1].length-a[1].length).map(([k,ids])=>`<section class="sheet"><div class="row" style="justify-content:space-between"><h3>${k} · ${ids.length}</h3>${k.startsWith('SU')?`<button class="btn sm" data-act="start" data-mode="wrong" data-sus="${k.slice(3)}" data-title="${k}: səhvlər">Təkrarla</button>`:''}</div>
+   <div class="stack" style="margin-top:8px;gap:4px">${ids.map(id=>`<button class="chip" style="text-align:left" data-act="errsel" data-id="${id}"><span class="mono">${id}</span> ${esc(QI[id].s.split('\n')[0].slice(0,120))}…</button>`).join('')}</div></section>`).join(''):'<section class="sheet"><p class="muted">Hazırda səhv yoxdur.</p></section>'}`};
+
+/* ---------- standards ---------- */
+V.stds=()=>`<section class="sheet stack"><div><div class="wp">Global Internal Audit Standards 2024 · Domain V (+ əlaqəli)</div><h1>Standartlar</h1><p class="muted small" style="margin:.3em 0 0">Part 2-də ən çox test olunan tələblər. Mənbə: IIA-nın 2024 standart mətni.</p></div></section>
+  ${C.stds.map(s=>`<section class="sheet"${s.num==='GEN'?' style="border-left:4px solid var(--pencil)"':''}><div class="wp">${s.num==='GEN'?'İmtahan strategiyası':'Std '+esc(s.num)}</div><h2>${esc(s.en)}</h2><p class="muted" style="margin:.1em 0 .6em">${esc(s.tr)}</p><ul class="pts">${s.p.map(x=>`<li>${x}</li>`).join('')}</ul>${s.t.length?`<div class="traps" style="margin-top:10px"><h3>⚠ İmtahan tələləri</h3><ul>${s.t.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}</section>`).join('')}
+  <section class="sheet"><div class="wp">Sənin playbook-undan</div><h2>İki cavab düz görünəndə: 30 qərar qaydası</h2><ol class="rules" style="margin-top:10px">${C.rules.map(r=>`<li><span>${esc(r)}</span></li>`).join('')}</ol></section>
+  <section class="sheet"><div class="wp">Zəncirlər</div><ul class="pts"><li><strong>Planlama:</strong> Anla → Risk qiymətləndir → Hədəflər → Əhatə → Kriterlər → Prosedurlar → Resurslar → İş proqramı</li><li><strong>Sübut:</strong> Hədəf → Prosedur → Sübut → Analiz → Bulgu → Nəticə → Ünsiyyət → İzləmə</li><li><strong>Bulgu:</strong> Kriter → Vəziyyət → Səbəb → Təsir/Risk → Tövsiyə/Fəaliyyət planı</li><li><strong>İstiqamət:</strong> Vouch = qeyddən sənədə = mövcudluq · Trace = sənəddən qeydə = tamlıq</li><li><strong>Eskalasiya:</strong> Rəhbərliklə müzakirə → CAE → üst rəhbərlik → board</li></ul></section>`;
+
+/* ---------- glossary ---------- */
+V.gloss=()=>{const all=[];C.units.forEach(u=>u.subs.forEach(s=>s.g.forEach(g=>all.push([g[0],g[1],s.code]))));const q=S.gq.toLowerCase();
+  const list=q?all.filter(g=>(g[0]+' '+g[1]).toLocaleLowerCase('tr').includes(q.toLocaleLowerCase('tr'))):all;
+  return `<section class="sheet stack"><div><div class="wp">${all.length} termin</div><h1>Lüğət · EN ↔ TR</h1><p class="small muted" style="margin:.3em 0 0">İmtahanı türkcə verəcəksən. Ona görə ingilis terminlərini türkcə qarşılıqları ilə birlikdə öyrən.</p></div>
+  <input type="search" id="gq" placeholder="Axtar: məsələn, residual, güvence, tracing…" value="${esc(S.gq)}" aria-label="Termin axtar">
+  <div class="tbl-wrap"><table><thead><tr><th>English</th><th>Türkçe</th><th class="num">WP</th></tr></thead><tbody id="gbody">${list.map(g=>`<tr><td>${esc(g[0])}</td><td>${esc(g[1])}</td><td class="num"><button class="chip" data-act="sub" data-c="${g[2]}">${g[2]}</button></td></tr>`).join('')}</tbody></table></div></section>`};
+
+/* ---------- stats ---------- */
+V.stats=()=>{const ds=domStats(),rd=readiness();
+  return `<section class="sheet stack"><div><div class="wp">Statistika</div><h1>Hazırlıq: ${rd===null?'–':Math.round(rd*100)+'%'}</h1><p class="small muted" style="margin:.3em 0 0">Domain çəkiləri ilə hesablanmış ilk cəhd dəqiqliyi (A 50%, B 40%, C 10%). Hədəf ≥ 75%.</p></div>
+   ${['A','B','C'].map(d=>{const s=ds[d];return `<div><div class="row" style="justify-content:space-between"><span><b>Domain ${d}</b> · ${DNAME[d]} <span class="muted small">(${DW[d]*100}%)</span></span><span class="mono small">${s.seen}/${s.n} · ${s.acc===null?'–':Math.round(s.acc*100)+'%'}</span></div><div class="bar-o" style="margin-top:4px"><div class="bar-i ${barCls(s.acc)}" style="width:${s.acc===null?0:Math.round(s.acc*100)}%"></div></div></div>`}).join('')}</section>
+  <section class="sheet"><div class="wp">Subunit-lər üzrə</div><div class="tbl-wrap"><table><thead><tr><th>WP</th><th>Mövzu</th><th class="num">İşlənib</th><th class="num">İlk cəhd</th><th class="num">Səhv</th></tr></thead><tbody>
+   ${Object.values(SUB).map(s=>{const st=statsFor(idsSub(s.code));return `<tr><td class="mono"><button class="chip" data-act="sub" data-c="${s.code}">${s.code}</button></td><td>${esc(s.tr)}</td><td class="num">${st.seen}/${st.n}</td><td class="num" style="color:${st.acc===null?'inherit':st.acc>=.8?'var(--tick)':st.acc>=.65?'var(--warn)':'var(--pencil)'}">${st.acc===null?'–':Math.round(st.acc*100)+'%'}</td><td class="num">${st.wrongNow||''}</td></tr>`}).join('')}</tbody></table></div></section>`};
+
+/* ---------- diagnostic ---------- */
+V.diag=()=>{const ds=QS.filter(q=>q.src==='D');const ans=meta().diagAns||{};const wrong=ds.filter(q=>ans[q.id]!==undefined&&ans[q.id]!==q.a);
+  return `<section class="sheet stack"><div><div class="wp">70 sual · cavab açarı və izahlar</div><h1>Diaqnostika: 66/70</h1></div>
+  <div class="note"><b>Qeyd 1: bu test asandır.</b> Səhv variantların çoxu açıq-aşkar yanlışdır ("Ignore it always", "Delete workpapers" kimi). Üstəlik düzgün cavablar ciddi şəkildə <span class="mono">A-B-C-D-A-B…</span> ardıcıllığı ilə gedir. 66/70 nəticəsi materialı tanıdığını göstərir, amma real imtahana hazırlığı ölçmür. Real göstərici ilk Gleim günlərinin və sınaq imtahanlarının nəticələri olacaq.</div>
+  <div class="note"><b>Qeyd 2: 54-cü sual uyğun gəlmir.</b> Göndərdiyin cədvəldə 54-cü sual “attribute sampling”, düzgün cavab isə C kimi verilib. Bu faylda isə 54-cü sual akış şemasında qərar simvolu haqqındadır (cavab B, elmas). Seçmə ölçüsü 55-ci sualdır (cavab C, daha yüksək etibarlılıq səviyyəsi). Sənin cavablarını yazarkən sualların nömrələnməsi fərqli versiyaya aid ola bilər. Hər iki suala aşağıda bax.</div>
+  </section>
+  ${[20,28,30,54,55].map(n=>{const q=QI['D'+n];return `<section class="sheet">${qBlock(q,{picked:ans[q.id]??null,reveal:true,yours:ans[q.id]??null})}</section>`}).join('')}
+  <section class="sheet"><div class="wp">Bütün açar</div><div class="tbl-wrap"><table><thead><tr><th class="num">№</th><th>SU</th><th>Sual</th><th class="num">Açar</th><th class="num">Sən</th></tr></thead><tbody>${ds.map(q=>`<tr><td class="num">${q.id.slice(1)}</td><td class="mono">${q.su}</td><td>${esc(q.s.split('\n')[0])}<div class="small muted">${esc(q.e)}</div></td><td class="num"><b>${'ABCD'[q.a]}</b></td><td class="num" style="color:${ans[q.id]===q.a?'var(--tick)':'var(--pencil)'}">${ans[q.id]===undefined?'–':'ABCD'[ans[q.id]]}</td></tr>`).join('')}</tbody></table></div></section>`};
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if(a==='tab'){go(b.dataset.v);return}
+  if(a==='lang'){LANG=b.dataset.v;try{localStorage.setItem(LS+'lang',LANG)}catch(e){}render();return}
+  if(a==='unit'){go('unit',{unit:+b.dataset.su});return}
+  if(a==='sub'){go('sub',{sub:b.dataset.c});return}
+  if(a==='read'){const c=b.dataset.c;if(meta().read[c])delete meta().read[c];else meta().read[c]=TODAY;Store.touch('meta');render();return}
+  if(a==='daydone'){const d=b.dataset.date;const was=!!meta().days[d];if(was)delete meta().days[d];else meta().days[d]=TODAY;Store.touch('meta');
+    if(!was){const k=+b.dataset.k;if(k+1<C.plan.length){toast('Gün '+(k+1)+' tamamlandı. Növbəti gün açıldı.');if(S.view==='day'){S.dayIdx=k+1}}}render();window.scrollTo({top:0});return}
+  if(a==='openday'){const k=+b.dataset.k;if(k<0||k>=C.plan.length)return;go('day',{dayIdx:k});return}
+  if(a==='peek'){S.peek={id:b.dataset.id,k:+b.dataset.k};render();return}
+  if(a==='start'){const o={mode:b.dataset.mode};if(b.dataset.subs)o.subs=b.dataset.subs.split(',');if(b.dataset.sus)o.sus=b.dataset.sus.split(',').map(Number);if(b.dataset.n)o.n=+b.dataset.n;if(b.dataset.weighted)o.weighted=1;if(b.dataset.src)o.src=b.dataset.src;
+    if(o.mode==='unseen'&&o.subs){/* ordered */}startSession(o,b.dataset.title||'Sessiya');return}
+  if(a==='pick'){if(S.view==='session'){const s=S.sess;if(s.picked!==null)return;const k=+b.dataset.k;const q=QI[s.ids[s.i]];s.picked=k;const u=document.getElementById('uns');const ok=answer(q.id,k,u&&u.checked);s.res[q.id]=ok;render();const nb=document.getElementById('nextbtn');nb&&nb.focus({preventScroll:true});return}
+    if(S.view==='mockrun'){const m=S.mock;m.ans[m.ids[m.i]]=+b.dataset.k;render();return}}
+  if(a==='next'){const s=S.sess;s.i++;s.picked=null;s.unsure=false;S.peek=null;render();window.scrollTo({top:0});return}
+  if(a==='endsess'){S.sess.i=S.sess.ids.length;render();return}
+  if(a==='redo'){const w=Object.entries(S.sess.res).filter(([,v])=>!v).map(([k])=>k);S.sess={ids:shuffle(w),i:0,title:'Səhvlərin təkrarı',res:{},picked:null};render();return}
+  if(a==='pstart'){const mode=document.getElementById('pm').value,n=+document.getElementById('pn').value,src=document.getElementById('psrc').value;const sus=[...document.querySelectorAll('#psus input:checked')].map(i=>+i.value);if(!sus.length&&src!=='Z'){toast('Ən azı bir Study Unit seç.');return}startSession({mode,n,src,sus:src==='Z'?null:sus},'Təcrübə: '+document.getElementById('pm').selectedOptions[0].text);return}
+  if(a==='psall'){document.querySelectorAll('#psus input').forEach(i=>i.checked=b.dataset.v==='1');return}
+  if(a==='psdom'){document.querySelectorAll('#psus input').forEach(i=>i.checked=[10,11,12].includes(+i.value));return}
+  if(a==='mockstart'){if(S.mock&&!S.mock.submitted&&Object.keys(S.mock.ans).length&&!b.dataset.force){b.dataset.force=1;b.textContent='Yarımçıq sınaq silinəcək. Yenə başla?';return}mockStart();return}
+  if(a==='mockresume'){go('mockrun');return}
+  if(a==='mnext'){const m=S.mock;if(m.i<m.ids.length-1){m.i++;render();window.scrollTo({top:0})}else if(S.view==='mockrun'){toast('Son sualdasan. Hazırsansa “Təhvil ver” düyməsini bas.')}return}
+  if(a==='mprev'){const m=S.mock;if(m.i>0){m.i--;render()}return}
+  if(a==='mgo'){S.mock.i=+b.dataset.k;render();window.scrollTo({top:0});return}
+  if(a==='mnextwrong'){const m=S.mock;for(let k=m.i+1;k<m.ids.length;k++){if(m.ans[m.ids[k]]!==QI[m.ids[k]].a){m.i=k;render();window.scrollTo({top:0});return}}toast('Başqa səhv qalmayıb.');return}
+  if(a==='mocksubmit'){const m=S.mock;const left=100-Object.keys(m.ans).length;if(left>0&&!b.dataset.sure){b.dataset.sure=1;b.textContent=left+' cavabsız. Yenə təhvil ver?';return}mockSubmit(false);return}
+  if(a==='errsel'){S.errSel=b.dataset.id||null;render();window.scrollTo({top:0});return}
+});
+document.addEventListener('change',e=>{if(e.target.id==='uns'&&S.sess)S.sess.unsure=e.target.checked;if(e.target.id==='mflag'&&S.mock){S.mock.flag[S.mock.ids[S.mock.i]]=e.target.checked;}});
+document.addEventListener('input',e=>{if(e.target.id==='gq'){S.gq=e.target.value;const pos=e.target.selectionStart;render();const el=document.getElementById('gq');el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}});
+document.addEventListener('keydown',e=>{if(e.target.matches('input[type=search],select'))return;const k=e.key.toLowerCase();
+  if(S.view==='session'&&S.sess&&S.sess.i<S.sess.ids.length){const s=S.sess;
+    if(s.picked===null){const idx='1234'.indexOf(k)>=0?'1234'.indexOf(k):'abcd'.indexOf(k);if(idx>=0){document.querySelector(`.opt[data-k="${idx}"]`)?.click();e.preventDefault()}if(k==='u'){const u=document.getElementById('uns');if(u){u.checked=!u.checked;s.unsure=u.checked}}}
+    else if(k==='enter'||k===' '){document.getElementById('nextbtn')?.click();e.preventDefault()}}
+  if(S.view==='mockrun'&&S.mock){const idx='1234'.indexOf(k)>=0?'1234'.indexOf(k):'abcd'.indexOf(k);if(idx>=0){document.querySelector(`.opt[data-k="${idx}"]`)?.click()}if(k==='arrowright')document.querySelector('[data-act="mnext"]')?.click();if(k==='arrowleft')document.querySelector('[data-act="mprev"]')?.click()}});
+
+/* ---------- backup (export / import) ---------- */
+function exportDocs(){const o={app:'cia-p2',v:1,ts:Date.now(),docs:{}};KEYS.forEach(k=>{if(Store.hasData(k))o.docs[k]=Store.docs[k]});return JSON.stringify(o)}
+function importDocs(o){if(typeof o==='string')o=JSON.parse(o);const docs=o&&o.docs?o.docs:o;let n=0;
+  KEYS.forEach(k=>{if(docs&&docs[k]){Store.merge(k,docs[k]);Store.saveLocal(k);Store.touch(k);n++}});return n}
+const _stats=V.stats;
+V.stats=()=>_stats()+`<section class="sheet stack"><div class="wp">Proqresin ehtiyat nüsxəsi</div>
+  <p class="small muted" style="margin:0">Proqresi başqa cihaza və ya səhifənin başqa nüsxəsinə köçürmək üçün: burada <b>kodu kopyala</b> (və ya faylı yüklə), o biri tərəfdə həmin kodu aşağıdakı xanaya yapışdırıb <b>Bərpa et</b>-ə bas. Mövcud nəticələr silinmir, birləşdirilir.</p>
+  <div class="row"><button class="btn pri" data-act="bkcopy">Kodu kopyala</button><button class="btn" data-act="bkfile">Fayl kimi yüklə</button><label class="btn" style="cursor:pointer">Fayldan bərpa<input type="file" id="bkin" accept=".json,application/json,text/plain" hidden></label></div>
+  <textarea id="bktxt" rows="4" style="width:100%;font-family:var(--f-mono);font-size:.75rem;border:1px solid var(--rule);border-radius:6px;padding:8px;background:var(--sheet2);color:var(--ink)" placeholder="Kodu bura yapışdır…"></textarea>
+  <div class="row"><button class="btn" data-act="bkrestore">Bərpa et</button></div></section>`;
+function bkDone(n){toast(n?'Proqres bərpa olundu ('+n+' bölmə).':'Kodda proqres tapılmadı.');render()}
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if(a==='bkcopy'){const t=exportDocs();const ta=document.getElementById('bktxt');try{await navigator.clipboard.writeText(t);toast('Kod kopyalandı.')}catch(er){if(ta){ta.value=t;ta.select();toast('Kod xanaya yazıldı — seçib kopyala.')}}}
+  if(a==='bkfile'){try{const bl=new Blob([exportDocs()],{type:'application/json'});const u=URL.createObjectURL(bl);const l=document.createElement('a');l.href=u;l.download='cia-proqres-'+nowStr()+'.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(er){toast('Yükləmə alınmadı — “Kodu kopyala”nı istifadə et.')}}
+  if(a==='bkrestore'){const t=(document.getElementById('bktxt')||{}).value||'';try{bkDone(importDocs(t.trim()))}catch(er){toast('Kod oxunmadı. Tam kopyalandığını yoxla.')}}});
+document.addEventListener('change',e=>{if(e.target.id!=='bkin')return;const f=e.target.files&&e.target.files[0];if(!f)return;f.text().then(t=>{try{bkDone(importDocs(t))}catch(er){toast('Fayl oxunmadı.')}})});
+/* removed views: today / plan / day / diag */
+delete V.today;delete V.plan;delete V.day;delete V.diag;
+/* ---------- boot ---------- */
+function start(saved){Store.loadLocal();try{if(window.CIA_SEED&&!KEYS.some(k=>{try{return localStorage.getItem(LS+k)}catch(e){return null}}))importDocs(window.CIA_SEED)}catch(e){}seedDiag();
+  let v=null;try{v=localStorage.getItem(LS+'view')}catch(e){}
+  if(saved&&saved.view){Object.assign(S,saved)}else if(v&&V[v]&&!['session','mockrun','mockres','sub','unit'].includes(v))S.view=v;
+  const h=location.hash.slice(1);if(h&&V[h]&&!['session','mockrun','mockres','sub','unit'].includes(h))S.view=h;
+  if(!V[S.view])S.view='topics';
+  render();Store.connect();
+  setInterval(()=>{const t=dnum(nowStr());if(t!==TODAY&&S.view==='topics')render()},60000)}
+try{window.claude?.hot?.snapshot?.(()=>({view:S.view,unit:S.unit,sub:S.sub,sess:S.sess,mock:S.mock,gq:S.gq}))}catch(e){}
+const H=window.claude&&window.claude.hot;
+if(H&&H.ready)H.ready(start);else start(H&&H.data||{});
+})();
+</script>
+
+<script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
+</body>
+</html>
