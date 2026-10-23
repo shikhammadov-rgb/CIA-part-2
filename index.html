@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script src="seed.js"></script>
+<script src="fb-config.js"></script><script src="cloud.js"></script>
 <title>CIA Part 2 İş Kağıdı</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,6 +158,7 @@ label.cb{display:inline-flex;gap:6px;align-items:center;font-size:.92rem}
 @media (max-width:560px){.unit>button{grid-template-columns:40px 1fr 70px}.subrow{grid-template-columns:40px 1fr}.subrow>:last-child{grid-column:2}.daylist .d{grid-template-columns:58px 1fr}.daylist .d>:last-child{grid-column:2}h1{font-size:1.4rem}.big{font-size:1.7rem}}
 @media (prefers-reduced-motion:no-preference){.opt,.btn{transition:border-color .12s,background-color .12s}}
 </style>
+<style>.sync.login{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}</style>
 <style>body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head>
 <body>
@@ -201,11 +202,13 @@ const pct=(a,b)=>b?Math.round(100*a/b):0;
 const KEYS=['meta','z','d'];for(let i=1;i<=14;i++)KEYS.push('g'+i);
 const docKey=id=>id[0]==='G'?'g'+id.slice(1).split('.')[0]:(id[0]==='Z'?'z':'d');
 const LS='cia-p2-v1:';
+let UID=(()=>{try{return localStorage.getItem(LS+'uid')}catch(e){return null}})();
+const lk=k=>LS+(UID?UID+':':'')+k;
 let LANG=(()=>{try{return localStorage.getItem(LS+'lang')||'both'}catch(e){return 'both'}})();
 const Store={db:null,docs:{},dirty:new Set(),timer:null,busy:false,
   blank(k){return k==='meta'?{v:1,read:{},days:{},mocks:[],diagAns:{}}:{v:1,r:{}}},
-  loadLocal(){KEYS.forEach(k=>{let o=null;try{o=JSON.parse(localStorage.getItem(LS+k)||'null')}catch(e){}this.docs[k]=o||this.blank(k)})},
-  saveLocal(k){try{localStorage.setItem(LS+k,JSON.stringify(this.docs[k]))}catch(e){}},
+  loadLocal(){KEYS.forEach(k=>{let o=null;try{o=JSON.parse(localStorage.getItem(lk(k))||'null')}catch(e){}this.docs[k]=o||this.blank(k)})},
+  saveLocal(k){try{localStorage.setItem(lk(k),JSON.stringify(this.docs[k]))}catch(e){}},
   merge(k,remote){const L=this.docs[k];let changedLocal=false;
     if(k==='meta'){const R=Object.assign(this.blank('meta'),remote);
       ['read','days','diagAns'].forEach(f=>{R[f]=R[f]||{};for(const x in L[f]||{}){if(!(x in R[f])){R[f][x]=L[f][x];changedLocal=true}}});
@@ -218,25 +221,35 @@ const Store={db:null,docs:{},dirty:new Set(),timer:null,busy:false,
     return changedLocal},
   async connect(){
     try{ if(!(window.claude&&typeof window.claude.use==='function'))return;
-      const db=await window.claude.use('db'); if(!db)return; this.db=db;
+      const db=await window.claude.use('db'); if(!db)return;
+      const user=await window.claude.use('user'); const uid=user?await user.id():null; if(!uid)return;
+      let owner=false;try{owner=!!user.isOwner()}catch(e){}
+      let name='';try{const me=await user.me();name=(me&&me.name)||''}catch(e){}
+      if(uid!==UID){const legacy=!UID;UID=uid;try{localStorage.setItem(LS+'uid',uid)}catch(e){}
+        if(legacy&&(owner||window.claude.site)){KEYS.forEach(k=>{this.saveLocal(k);try{localStorage.removeItem(LS+k)}catch(e){}})}else this.loadLocal();}
+      this.db=db;this.base='data/users/'+uid+'/';
       for(const k of KEYS){
-        try{const snap=await db.doc('progress/'+k).get();
-          if(snap.exists){if(this.merge(k,snap.data()))this.dirty.add(k)}else{if(this.hasData(k))this.dirty.add(k)}
+        try{const snap=await db.doc(this.base+k).get();
+          if(snap.exists){if(this.merge(k,snap.data()))this.dirty.add(k)}
+          else{if(owner){try{const old=await db.doc('progress/'+k).get();if(old.exists)this.merge(k,old.data())}catch(e){}}
+            if(this.hasData(k))this.dirty.add(k)}
           this.saveLocal(k);}catch(e){}
       }
-      setSync(true); this.flush(); render();
+      if(owner)seedDiag();
+      setSync(true,name); this.flush(); render();
     }catch(e){}
   },
   hasData(k){const d=this.docs[k];return k==='meta'?(Object.keys(d.read).length||Object.keys(d.days).length||d.mocks.length||d.seeded):Object.keys(d.r).length>0},
   touch(k){this.saveLocal(k);if(!this.db)return;this.dirty.add(k);clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),1500)},
   async flush(){if(!this.db||this.busy)return;this.busy=true;
     try{while(this.dirty.size){const k=this.dirty.values().next().value;this.dirty.delete(k);
-      try{await this.db.doc('progress/'+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e){
-        if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800+Math.random()*800));try{await this.db.doc('progress/'+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e2){}}
+      try{await this.db.doc(this.base+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e){
+        if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800+Math.random()*800));try{await this.db.doc(this.base+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e2){}}
+        else if(e&&(e.code==='permission_denied'||e.code==='not_granted'||e.code==='invalid_argument')){if(!this.warned){this.warned=1;toast('Tərəqqi yalnız bu cihazda saxlanır: bulud üçün bu səhifəyə "Contributor" girişi lazımdır.')}}
         else if(e&&(e.code==='quota_exceeded')){toast('Bulud yaddaşı doludur; tərəqqi bu cihazda saxlanır.')}
       }}}finally{this.busy=false}}
 };
-function setSync(on){const el=document.getElementById('sync');el.textContent=on?'bulud ilə sinxron':'bu cihaz';el.classList.toggle('on',on);el.title=on?'Tərəqqi bütün cihazlarda saxlanır':'Tərəqqi yalnız bu brauzerdə saxlanır'}
+function setSync(on,name){const el=document.getElementById('sync');el.textContent=on?(name?'☁ '+name:'bulud ilə sinxron'):'bu cihaz';el.classList.toggle('on',on);el.title=on?'Şəxsi tərəqqin hesabına bağlıdır — telefon və kompüterdə eynidir':'Tərəqqi yalnız bu brauzerdə saxlanır'}
 const meta=()=>Store.docs.meta;
 const rec=id=>Store.docs[docKey(id)].r[id];
 function setRec(id,r){const k=docKey(id);Store.docs[k].r[id]=r;Store.touch(k)}
@@ -546,7 +559,7 @@ document.addEventListener('change',e=>{if(e.target.id!=='bkin')return;const f=e.
 /* removed views: today / plan / day / diag */
 delete V.today;delete V.plan;delete V.day;delete V.diag;
 /* ---------- boot ---------- */
-function start(saved){Store.loadLocal();try{if(window.CIA_SEED&&!KEYS.some(k=>{try{return localStorage.getItem(LS+k)}catch(e){return null}}))importDocs(window.CIA_SEED)}catch(e){}seedDiag();
+function start(saved){Store.loadLocal();try{if(window.CIA_SEED&&!KEYS.some(k=>{try{return localStorage.getItem(lk(k))}catch(e){return null}}))importDocs(window.CIA_SEED)}catch(e){}if(!(window.claude&&window.claude.use))seedDiag();
   let v=null;try{v=localStorage.getItem(LS+'view')}catch(e){}
   if(saved&&saved.view){Object.assign(S,saved)}else if(v&&V[v]&&!['session','mockrun','mockres','sub','unit'].includes(v))S.view=v;
   const h=location.hash.slice(1);if(h&&V[h]&&!['session','mockrun','mockres','sub','unit'].includes(h))S.view=h;
