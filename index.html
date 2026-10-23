@@ -236,14 +236,25 @@ const Store={db:null,docs:{},dirty:new Set(),timer:null,busy:false,
           this.saveLocal(k);}catch(e){}
       }
       if(owner)seedDiag();
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')this.pull()});
+      window.addEventListener('focus',()=>this.pull());
+      setInterval(()=>{if(document.visibilityState==='visible')this.pull()},90000);
       setSync(true,name); this.flush(); render();
     }catch(e){}
   },
+  async pull(){if(!this.db||this.pulling)return;this.pulling=true;let ch=false;
+    try{for(const k of KEYS){try{const snap=await this.db.doc(this.base+k).get();if(!snap.exists)continue;
+        const before=JSON.stringify(this.docs[k]);if(this.merge(k,snap.data()))this.dirty.add(k);
+        if(JSON.stringify(this.docs[k])!==before){ch=true;this.saveLocal(k)}}catch(e){}}
+    }finally{this.pulling=false}
+    if(this.dirty.size)this.flush();
+    if(ch&&!['session','mockrun'].includes(S.view))render()},
   hasData(k){const d=this.docs[k];return k==='meta'?(Object.keys(d.read).length||Object.keys(d.days).length||d.mocks.length||d.seeded):Object.keys(d.r).length>0},
   touch(k){this.saveLocal(k);if(!this.db)return;this.dirty.add(k);clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),1500)},
   async flush(){if(!this.db||this.busy)return;this.busy=true;
     try{while(this.dirty.size){const k=this.dirty.values().next().value;this.dirty.delete(k);
-      try{await this.db.doc(this.base+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e){
+      try{try{const snap=await this.db.doc(this.base+k).get();if(snap.exists){this.merge(k,snap.data());this.saveLocal(k)}}catch(e0){}
+        await this.db.doc(this.base+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e){
         if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800+Math.random()*800));try{await this.db.doc(this.base+k).set(JSON.parse(JSON.stringify(this.docs[k])))}catch(e2){}}
         else if(e&&(e.code==='permission_denied'||e.code==='not_granted'||e.code==='invalid_argument')){if(!this.warned){this.warned=1;toast('Tərəqqi yalnız bu cihazda saxlanır: bulud üçün bu səhifəyə "Contributor" girişi lazımdır.')}}
         else if(e&&(e.code==='quota_exceeded')){toast('Bulud yaddaşı doludur; tərəqqi bu cihazda saxlanır.')}
