@@ -162,17 +162,17 @@ label.cb{display:inline-flex;gap:6px;align-items:center;font-size:.92rem}
 </head>
 <body>
 
-
 <header class="top"><div class="wrap">
   <div class="bar">
     <div class="brand"><span class="idx">WP-P2</span><span>CIA Part 2 İş Kağıdı</span></div>
-    <div class="count"><span><b id="cdays">–</b> gün qalıb</span><span class="sync" id="sync">bu cihaz</span></div>
+    <div class="count"><span id="xlseg"></span><span><b id="cdays">–</b> gün qalıb</span><span class="sync" id="sync">bu cihaz</span></div>
   </div>
   <nav class="tabs" id="tabs" aria-label="Bölmələr"></nav>
 </div></header>
 <div class="wrap"><main id="main"><section class="sheet"><p class="muted">Yüklənir…</p></section></main></div>
 
 <script src="data-0.js"></script><script src="data-1.js"></script><script src="data-2.js"></script><script src="data-3.js"></script><script src="data-4.js"></script>
+<script src="lang.js"></script>
 <script>
 (function(){
 "use strict";
@@ -277,7 +277,7 @@ function renderTabs(){const t=document.getElementById('tabs');const active=(S.vi
   t.innerHTML=TABS.map(([k,l])=>`<button data-act="tab" data-v="${k}" ${k===active?'aria-current="page"':''}>${l}</button>`).join('')}
 let toastT;function toast(m){let el=document.getElementById('toast');if(!el){el=document.createElement('div');el.id='toast';el.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-size:.9rem;z-index:20;max-width:90vw';document.body.appendChild(el)}el.textContent=m;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)}
 
-function render(){TODAY=dnum(nowStr());renderTabs();document.getElementById('cdays').textContent=Math.max(0,EXAM-TODAY);
+function render(){TODAY=dnum(nowStr());renderTabs();renderXL();document.getElementById('cdays').textContent=Math.max(0,EXAM-TODAY);
   const m=document.getElementById('main');const f=V[S.view]||V.topics;m.innerHTML=f();if(S.view==='mockrun')tickTimer()}
 
 /* ---------- views ---------- */
@@ -342,15 +342,25 @@ V.topics=()=>`<section class="sheet"><div class="wp">Gleim 2025 · 14 Study Unit
 V.unit=()=>{const u=UNIT[S.unit];return `<section class="sheet"><button class="btn ghost sm" data-act="tab" data-v="topics">← Mövzular</button><div class="wp" style="margin-top:10px">SU ${u.su} · Domain ${u.d}</div><h1>${esc(u.tr)}</h1><p class="muted" style="margin:.2em 0 .8em">${esc(u.en)}</p>
   ${u.subs.map(s=>{const st=statsFor(idsSub(s.code));return `<div class="subrow"><span class="mono">${s.code}</span><button class="chip" data-act="sub" data-c="${s.code}" style="justify-self:start;text-align:left;${meta().read[s.code]?'border-color:var(--tick)':''}">${esc(s.tr)}${meta().read[s.code]?' ✓':''}<br><span class="small muted">${esc(s.en)}</span></button><span class="small mono">${st.seen}/${st.n}${st.acc!==null?' · '+Math.round(st.acc*100)+'%':''}</span></div>`}).join('')}
   <div class="row" style="margin-top:12px"><button class="btn pri" data-act="start" data-mode="unseen" data-sus="${u.su}" data-title="SU ${u.su}: əsas suallar">Əsas suallar</button><button class="btn" data-act="start" data-mode="wrong" data-sus="${u.su}" data-title="SU ${u.su}: səhvlər">Səhvlər</button><button class="btn" data-act="start" data-mode="unseen" data-src="R" data-n="20" data-sus="${u.su}" data-title="SU ${u.su}: ehtiyat 20">Ehtiyat 20</button></div></section>`};
+/* ---------- explanation language (AZ / TR / EN) ---------- */
+let XL=(()=>{try{return localStorage.getItem(LS+'xl')||'az'}catch(e){return 'az'}})();if(!['az','tr','en'].includes(XL))XL='az';
+const XLT={az:{traps:'⚠ İmtahan tələləri',asks:'İmtahan belə soruşur',terms:'Terminlər · EN ↔ TR',pend:'Bu bölmənin tərcüməsi hələ hazırlanır — azərbaycanca göstərilir.'},
+ tr:{traps:'⚠ Sınav tuzakları',asks:'Sınav böyle sorar',terms:'Terimler · EN ↔ TR',pend:'Bu bölümün çevirisi henüz hazırlanıyor — Azerbaycanca gösteriliyor.'},
+ en:{traps:'⚠ Exam traps',asks:'How the exam asks',terms:'Terms · EN ↔ TR',pend:'Translation of this section is in progress — shown in Azerbaijani.'}};
+function xSub(s){if(XL==='az')return {p:s.p,t:s.t,k:s.k||[],q:s.q||[],fb:false};const L=window.CIA_L&&window.CIA_L[XL]&&window.CIA_L[XL].subs[s.code];return L?{p:L.p,t:L.t,k:L.k||[],q:L.q||[],fb:false}:{p:s.p,t:s.t,k:s.k||[],q:s.q||[],fb:true}}
+function xStd(s){if(XL==='az')return {p:s.p,t:s.t,fb:false};const L=window.CIA_L&&window.CIA_L[XL]&&window.CIA_L[XL].stds[s.num];return L?{p:L.p,t:L.t,fb:false}:{p:s.p,t:s.t,fb:true}}
+function renderXL(){const el=document.getElementById('xlseg');if(!el)return;el.innerHTML=`<span class="seg" role="group" aria-label="İzah dili" title="İzah dili / Açıklama dili / Explanation language">${[['az','AZ'],['tr','TR'],['en','EN']].map(([v,l])=>`<button data-act="xl" data-v="${v}" class="${XL===v?'on':''}" aria-pressed="${XL===v}">${l}</button>`).join('')}</span>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act="xl"]');if(!b)return;XL=b.dataset.v;try{localStorage.setItem(LS+'xl',XL)}catch(er){}render()});
 function ptsHtml(p){let h='',open=false;for(const x of p){if(x[0]==='§'){if(open){h+='</ul>';open=false}h+=`<h3 class="ph">${x.slice(1)}</h3>`}else{if(!open){h+='<ul class="pts">';open=true}h+=`<li>${x}</li>`}}if(open)h+='</ul>';return h}
-V.sub=()=>{const s=SUB[S.sub];const st=statsFor(idsSub(s.code));const u=UNIT[s.su];
+V.sub=()=>{const s=SUB[S.sub];const st=statsFor(idsSub(s.code));const u=UNIT[s.su];const x=xSub(s),T=XLT[XL];
   return `<section class="sheet stack"><div class="row"><button class="btn ghost sm" data-act="unit" data-su="${s.su}">← SU ${s.su}</button></div>
   <div><div class="wp">WP ${s.code} · ${esc(u.en)} · Gleim ~${s.pg} səh.</div><h1>${esc(s.tr)}</h1><p class="muted" style="margin:.2em 0 0">${esc(s.en)}</p></div>
-  ${(s.k||[]).length?`<div class="keyidea">${s.k.map(x=>`<p>${x}</p>`).join('')}</div>`:''}
-  ${ptsHtml(s.p)}
-  ${s.t.length?`<div class="traps"><h3>⚠ İmtahan tələləri</h3><ul>${s.t.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
-  ${(s.q||[]).length?`<div class="asks"><h3>İmtahan belə soruşur</h3><ul>${s.q.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
-  ${s.g.length?`<div><h3 style="margin-bottom:6px">Terminlər · EN ↔ TR</h3><div class="tbl-wrap"><table><thead><tr><th>English</th><th>Türkçe</th></tr></thead><tbody>${s.g.map(g=>`<tr><td>${esc(g[0])}</td><td>${esc(g[1])}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+  ${x.fb?`<p class="small muted" style="margin:0">${T.pend}</p>`:''}
+  ${x.k.length?`<div class="keyidea">${x.k.map(y=>`<p>${y}</p>`).join('')}</div>`:''}
+  ${ptsHtml(x.p)}
+  ${x.t.length?`<div class="traps"><h3>${T.traps}</h3><ul>${x.t.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}
+  ${x.q.length?`<div class="asks"><h3>${T.asks}</h3><ul>${x.q.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}
+  ${s.g.length?`<div><h3 style="margin-bottom:6px">${T.terms}</h3><div class="tbl-wrap"><table><thead><tr><th>English</th><th>Türkçe</th></tr></thead><tbody>${s.g.map(g=>`<tr><td>${esc(g[0])}</td><td>${esc(g[1])}</td></tr>`).join('')}</tbody></table></div></div>`:''}
   <div class="row" style="justify-content:space-between;border-top:1px solid var(--rule);padding-top:12px"><span class="small muted mono">${st.seen}/${st.n} işlənib${st.acc!==null?' · ilk cəhd '+Math.round(st.acc*100)+'%':''}${st.wrongNow?' · '+st.wrongNow+' səhv':''}</span>
   <div class="row"><button class="btn ${meta().read[s.code]?'':'pri'}" data-act="read" data-c="${s.code}">${meta().read[s.code]?'✓ Oxunub':'Oxudum'}</button><button class="btn pri" data-act="start" data-mode="unseen" data-subs="${s.code}" data-title="${s.code} ${esc(s.tr)}">5 sual</button>${st.wrongNow?`<button class="btn" data-act="start" data-mode="wrong" data-subs="${s.code}" data-title="${s.code}: səhvlər">Səhvlər (${st.wrongNow})</button>`:''}${s.nr?`<button class="btn" data-act="start" data-mode="unseen" data-src="R" data-n="15" data-subs="${s.code}" data-title="${s.code}: ehtiyat">Ehtiyat (${s.nr})</button>`:''}</div></div></section>`};
 
@@ -452,7 +462,7 @@ V.errors=()=>{const w=wrongIds(),u=unsureIds().filter(id=>!w.includes(id));const
 
 /* ---------- standards ---------- */
 V.stds=()=>`<section class="sheet stack"><div><div class="wp">Global Internal Audit Standards 2024 · Domain V (+ əlaqəli)</div><h1>Standartlar</h1><p class="muted small" style="margin:.3em 0 0">Part 2-də ən çox test olunan tələblər. Mənbə: IIA-nın 2024 standart mətni.</p></div></section>
-  ${C.stds.map(s=>`<section class="sheet"${s.num==='GEN'?' style="border-left:4px solid var(--pencil)"':''}><div class="wp">${s.num==='GEN'?'İmtahan strategiyası':'Std '+esc(s.num)}</div><h2>${esc(s.en)}</h2><p class="muted" style="margin:.1em 0 .6em">${esc(s.tr)}</p><ul class="pts">${s.p.map(x=>`<li>${x}</li>`).join('')}</ul>${s.t.length?`<div class="traps" style="margin-top:10px"><h3>⚠ İmtahan tələləri</h3><ul>${s.t.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}</section>`).join('')}
+  ${C.stds.map(s=>`<section class="sheet"${s.num==='GEN'?' style="border-left:4px solid var(--pencil)"':''}><div class="wp">${s.num==='GEN'?'İmtahan strategiyası':'Std '+esc(s.num)}</div><h2>${esc(s.en)}</h2><p class="muted" style="margin:.1em 0 .6em">${esc(s.tr)}</p>${(()=>{const x=xStd(s),T=XLT[XL];return `${x.fb?`<p class="small muted">${T.pend}</p>`:''}<ul class="pts">${x.p.map(y=>`<li>${y}</li>`).join('')}</ul>${x.t.length?`<div class="traps" style="margin-top:10px"><h3>${s.num==='GEN'?T.traps.replace('⚠ ','⚠ '):T.traps}</h3><ul>${x.t.map(y=>`<li>${y}</li>`).join('')}</ul></div>`:''}`})()}</section>`).join('')}
   <section class="sheet"><div class="wp">Sənin playbook-undan</div><h2>İki cavab düz görünəndə: 30 qərar qaydası</h2><ol class="rules" style="margin-top:10px">${C.rules.map(r=>`<li><span>${esc(r)}</span></li>`).join('')}</ol></section>
   <section class="sheet"><div class="wp">Zəncirlər</div><ul class="pts"><li><strong>Planlama:</strong> Anla → Risk qiymətləndir → Hədəflər → Əhatə → Kriterlər → Prosedurlar → Resurslar → İş proqramı</li><li><strong>Sübut:</strong> Hədəf → Prosedur → Sübut → Analiz → Bulgu → Nəticə → Ünsiyyət → İzləmə</li><li><strong>Bulgu:</strong> Kriter → Vəziyyət → Səbəb → Təsir/Risk → Tövsiyə/Fəaliyyət planı</li><li><strong>İstiqamət:</strong> Vouch = qeyddən sənədə = mövcudluq · Trace = sənəddən qeydə = tamlıq</li><li><strong>Eskalasiya:</strong> Rəhbərliklə müzakirə → CAE → üst rəhbərlik → board</li></ul></section>`;
 
@@ -524,7 +534,7 @@ function importDocs(o){if(typeof o==='string')o=JSON.parse(o);const docs=o&&o.do
 const _stats=V.stats;
 V.stats=()=>_stats()+`<section class="sheet stack"><div class="wp">Proqresin ehtiyat nüsxəsi</div>
   <p class="small muted" style="margin:0">Proqresi başqa cihaza və ya səhifənin başqa nüsxəsinə köçürmək üçün: burada <b>kodu kopyala</b> (və ya faylı yüklə), o biri tərəfdə həmin kodu aşağıdakı xanaya yapışdırıb <b>Bərpa et</b>-ə bas. Mövcud nəticələr silinmir, birləşdirilir.</p>
-  <div class="row"><button class="btn pri" data-act="bkcopy">Kodu kopyala</button><button class="btn" data-act="bkfile">Fayl kimi yüklə</button><label class="btn" style="cursor:pointer">Fayldan bərpa<input type="file" id="bkin" accept=".json,application/json,text/plain" hidden></label></div>
+  <div class="row"><button class="btn pri" data-act="bkcopy">Kodu kopyala</button>${window.claude?'':'<button class="btn" data-act="bkfile">Fayl kimi yüklə</button>'}<label class="btn" style="cursor:pointer">Fayldan bərpa<input type="file" id="bkin" accept=".json,application/json,text/plain" hidden></label></div>
   <textarea id="bktxt" rows="4" style="width:100%;font-family:var(--f-mono);font-size:.75rem;border:1px solid var(--rule);border-radius:6px;padding:8px;background:var(--sheet2);color:var(--ink)" placeholder="Kodu bura yapışdır…"></textarea>
   <div class="row"><button class="btn" data-act="bkrestore">Bərpa et</button></div></section>`;
 function bkDone(n){toast(n?'Proqres bərpa olundu ('+n+' bölmə).':'Kodda proqres tapılmadı.');render()}
